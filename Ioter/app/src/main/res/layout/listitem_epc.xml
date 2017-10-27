@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@color/black" >
+
+    <TextView
+        android:id="@+id/name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="@dimen/common_margin_size"
+        android:layout_marginRight="@dimen/common_margin_size"
+        android:layout_marginTop="8dp"
+        android:layout_toLeftOf="@+id/check_iv"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="@dimen/common_margin_size"
+        android:layout_marginRight="@dimen/common_margin_size"
+        android:layout_toLeftOf="@+id/check_iv"
+        android:gravity="center_vertical"
+        android:weightSum="3" >
+
+        <TextView
+            android:id="@+id/size_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/color_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:layout_marginLeft="4dp"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/price_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:layout_marginLeft="4dp"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divide_v"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_divider_height"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/common_margin_size"
+        android:layout_marginRight="@dimen/common_margin_size"
+        android:background="@color/white" />
+
+    <ImageView
+        android:id="@+id/check_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/common_margin_size"
+        android:contentDescription="@+id/check_iv"
+        android:src="@mipmap/ic_checked"
+        android:visibility="gone" />
+
+</RelativeLayout>
