@@ -28,7 +28,6 @@ public class DebugUtil
                 }
             }
         }
-
         Log.e(strTag, strMsg);
     }
 }
