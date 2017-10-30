@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_background_color"
+    android:orientation="vertical" >
+
+    <include layout="@layout/include_common_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="@color/white" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/power"
+            android:textColor="@color/common_text_color" />
+
+        <Spinner
+            android:id="@+id/power_sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:entries="@array/Array_Power"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/power_get_btn"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/bg_5radius_rectangle_grey"
+            android:text="@string/get"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/power_set_btn"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:background="@drawable/bg_5radius_rectangle_grey"
+            android:text="@string/setting"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="@color/white" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/frequency"
+            android:textColor="@color/common_text_color" />
+
+        <Spinner
+            android:id="@+id/frequency_sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:entries="@array/Array_Frequency"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/frequency_get_btn"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/bg_5radius_rectangle_grey"
+            android:text="@string/get"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/frequency_set_btn"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:background="@drawable/bg_5radius_rectangle_grey"
+            android:text="@string/setting"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="@color/white" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/base_band_rate"
+            android:textColor="@color/common_text_color" />
+
+        <Spinner
+            android:id="@+id/band_sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:entries="@array/Array_BaseSpeedType"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/band_get_btn"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/bg_5radius_rectangle_grey"
+            android:text="@string/get"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/band_set_btn"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:background="@drawable/bg_5radius_rectangle_grey"
+            android:text="@string/setting"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="@color/white" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Qvalue"
+            android:textColor="@color/common_text_color" />
+
+        <Spinner
+            android:id="@+id/q_sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:entries="@array/Array_Q"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/q_get_btn"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/bg_5radius_rectangle_grey"
+            android:text="@string/get"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/q_set_btn"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:background="@drawable/bg_5radius_rectangle_grey"
+            android:text="@string/setting"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="@color/white" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/session"
+            android:textColor="@color/common_text_color" />
+
+        <Spinner
+            android:id="@+id/session_sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:entries="@array/Array_Session"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/session_get_btn"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/bg_5radius_rectangle_grey"
+            android:text="@string/get"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/session_set_btn"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
+            android:background="@drawable/bg_5radius_rectangle_grey"
+            android:text="@string/setting"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/common_title_bar_height"
+    android:background="@color/common_titlebar_bg" >
+    
+    <ImageView
+        android:id="@+id/app_common_bar_left_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@id/app_common_bar_left_iv"
+        android:paddingLeft="@dimen/common_margin_size"
+        android:scaleType="centerInside"
+        android:src="@mipmap/ic_titlebar_back" />
+
+    <TextView
+        android:id="@+id/app_common_bar_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:ellipsize="middle"
+        android:gravity="center"
+        android:maxEms="10"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/common_title_text_size" />
+
+
+    <ImageView
+        android:id="@+id/app_common_bar_right_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@id/app_common_bar_right_iv"
+        android:paddingRight="@dimen/common_margin_size"
+        android:scaleType="centerInside"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/app_common_bar_right_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical"
+        android:paddingRight="@dimen/common_margin_size"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+</RelativeLayout>
