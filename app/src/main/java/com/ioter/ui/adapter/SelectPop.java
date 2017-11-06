@@ -1,7 +1,5 @@
 package com.ioter.ui.adapter;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
@@ -16,6 +14,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.ioter.R;
+
+import java.util.ArrayList;
 
 public class SelectPop extends PopupWindow
 {
@@ -81,21 +81,18 @@ public class SelectPop extends PopupWindow
         @Override
         public int getCount()
         {
-            // TODO Auto-generated method stub
             return mDataList.size();
         }
 
         @Override
         public Object getItem(int position)
         {
-            // TODO Auto-generated method stub
             return null;
         }
 
         @Override
         public long getItemId(int position)
         {
-            // TODO Auto-generated method stub
             return 0;
         }
 

@@ -2,6 +2,7 @@ package com.ioter.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,14 +12,11 @@ import android.widget.TextView;
 
 import com.ioter.R;
 import com.ioter.bean.ScanInfoData;
-import com.ioter.common.util.ToastUtil;
 import com.ioter.di.component.AppComponent;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.ionicons_typeface_library.Ionicons;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
 public class ScanResultActivity extends BaseActivity
@@ -35,6 +33,8 @@ public class ScanResultActivity extends BaseActivity
     private Button button;
 
     private MyAdapter mAdapter;
+
+    private Toolbar mToolBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -62,68 +62,42 @@ public class ScanResultActivity extends BaseActivity
         {
             finish();
         }
-        String result = intent.getStringExtra("result");
+        ArrayList<ScanInfoData> dataList = (ArrayList<ScanInfoData>) intent.getSerializableExtra("result");
         /**
          * 初始化组件
          */
         initTitle();
         initView();
 
-        parseData(result);
+        mAdapter.updateList(dataList);
     }
 
     private void initTitle()
     {
-        findViewById(R.id.app_common_bar_left_iv).setOnClickListener(new View.OnClickListener()
+        mToolBar = (Toolbar) findViewById(R.id.tool_bar);
+        mToolBar.setNavigationIcon(
+                new IconicsDrawable(this)
+                        .icon(Ionicons.Icon.ion_ios_arrow_back)
+                        .sizeDp(16)
+                        .color(getResources().getColor(R.color.md_white_1000)
+                        )
+        );
+        mToolBar.setNavigationOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                ScanResultActivity.this.finish();
+                finish();
             }
         });
-        ((TextView) findViewById(R.id.app_common_bar_title_tv)).setText("查询结果");
     }
 
     private void initView()
     {
+
         ListView epcLv = (ListView) findViewById(R.id.epc_lv);
         mAdapter = new MyAdapter();
         epcLv.setAdapter(mAdapter);
-    }
-
-    private void parseData(String result)
-    {
-        try
-        {
-            ArrayList<ScanInfoData> dataList = new ArrayList<ScanInfoData>();
-            // 将json字符串转换成jsonObject
-            JSONObject jsonObject = new JSONObject(result);
-            Iterator ite = jsonObject.keys();
-            // 遍历jsonObject数据,添加到Map对象
-            while (ite.hasNext())
-            {
-                String key = ite.next().toString();
-                String value = jsonObject.get(key).toString();
-                ScanInfoData data = new ScanInfoData();
-                data.time = key.replace("\n", "").trim();
-                data.content = value.replace("\n", "").trim();
-                dataList.add(data);
-            }
-            if (dataList != null && dataList.size() > 0)
-            {
-                mAdapter.updateList(dataList);
-            } else
-            {
-                ToastUtil.toast("没有扫描的数据");
-                finish();
-            }
-        } catch (JSONException e)
-        {
-            e.printStackTrace();
-            ToastUtil.toast(result + "");
-            finish();
-        }
     }
 
     @Override

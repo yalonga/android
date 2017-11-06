@@ -21,12 +21,14 @@ import com.clouiotech.port.Adapt;
 import com.clouiotech.port.PropertiesManager;
 import com.ioter.R;
 import com.ioter.common.font.Cniao5Font;
+import com.ioter.common.util.DataUtil;
 import com.ioter.common.util.DeviceUtil;
 import com.ioter.common.util.ToastUtil;
 import com.ioter.di.component.AppComponent;
 import com.ioter.di.component.DaggerMainComponent;
 import com.ioter.di.module.MainModule;
-import com.ioter.hopeland.HopeLandEpcCheckActivity;
+import com.ioter.hopeland.SupoinEpcCheckActivity;
+import com.ioter.hopeland.SupoinEpcInOutActivity;
 import com.ioter.presenter.MainPresenter;
 import com.ioter.presenter.contract.MainContract;
 import com.ioter.ui.widget.BannerLayout;
@@ -76,6 +78,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
 
     private void initBanner()
     {
+        //mToolBar.setTitle("Ioter(" + DeviceUtil.getDeviceName(DeviceUtil.getDeviceId()) + ")");
         List<String> views = new ArrayList<String>();
         String bannerUrl = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1508847478814&di=a96ab510762a29e2e4f3ffe1a47e756e&imgtype=0&src=http%3A%2F%2Fg.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fe61190ef76c6a7efd0bef8e7f4faaf51f2de6652.jpg";
         views.add(bannerUrl);
@@ -110,6 +113,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     {
         findViewById(R.id.out_rlyt).setOnClickListener(this);
         findViewById(R.id.in_rlyt).setOnClickListener(this);
+        findViewById(R.id.store_in_rlyt).setOnClickListener(this);
         findViewById(R.id.check_rlyt).setOnClickListener(this);
         findViewById(R.id.scan_rlyt).setOnClickListener(this);
         findViewById(R.id.more_rlyt).setOnClickListener(this);
@@ -177,7 +181,15 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
 
                         break;
                     case R.id.menu_app_update:
-
+                        if (DeviceUtil.getDeviceId() == DeviceUtil.SUPOIN)
+                        {
+                            DeviceUtil.setDeviceId(DeviceUtil.HOPELAND);
+                        } else
+                        {
+                            DeviceUtil.setDeviceId(DeviceUtil.SUPOIN);
+                        }
+                        //mToolBar.setTitle("Ioter(" + DeviceUtil.getDeviceName(DeviceUtil.getDeviceId()) + ")");
+                        mDrawerLayout.closeDrawers();
                         break;
 
                     case R.id.menu_setting:
@@ -211,50 +223,78 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         switch (v.getId())
         {
             case R.id.out_rlyt:
-                if (DeviceUtil.getDefaultDeviceId() == DeviceUtil.SUPOIN)
+                if (DeviceUtil.getDeviceId() == DeviceUtil.SUPOIN)
                 {
-                    ToastUtil.toast("暂无此功能");
-                    return;
-                }
-                propertiesInstance = Adapt.getPropertiesInstance();
-                if (!propertiesInstance.support("UHF"))
+                    startActivity(new Intent(this, SupoinEpcInOutActivity.class));
+                } else if (DeviceUtil.getDeviceId() == DeviceUtil.HOPELAND)
                 {
-                    ToastUtil.toast("该设备不支持高频读写");
-                    return;
+                    propertiesInstance = Adapt.getPropertiesInstance();
+                    if (!propertiesInstance.support("UHF"))
+                    {
+                        ToastUtil.toast("该设备不支持高频读写");
+                        return;
+                    }
+                    startActivity(new Intent(this, EpcInOutActivity.class));
                 }
-                startActivity(new Intent(this, EpcInOutActivity.class));
                 break;
             case R.id.in_rlyt:
-                if (DeviceUtil.getDefaultDeviceId() == DeviceUtil.SUPOIN)
+                if (DeviceUtil.getDeviceId() == DeviceUtil.SUPOIN)
                 {
-                    ToastUtil.toast("暂无此功能");
-                    return;
-                }
-                propertiesInstance = Adapt.getPropertiesInstance();
-                if (!propertiesInstance.support("UHF"))
+                    Intent intent = new Intent(this, SupoinEpcInOutActivity.class);
+                    intent.putExtra("type", 1);
+                    startActivity(intent);
+                } else if (DeviceUtil.getDeviceId() == DeviceUtil.HOPELAND)
                 {
-                    ToastUtil.toast("该设备不支持高频读写");
-                    return;
+                    propertiesInstance = Adapt.getPropertiesInstance();
+                    if (!propertiesInstance.support("UHF"))
+                    {
+                        ToastUtil.toast("该设备不支持高频读写");
+                        return;
+                    }
+                    if (!propertiesInstance.support("UHF"))
+                    {
+                        ToastUtil.toast("该设备不支持高频读写");
+                        return;
+                    }
+                    Intent intent = new Intent(this, EpcInOutActivity.class);
+                    intent.putExtra("type", 1);
+                    startActivity(intent);
                 }
-                Intent intent = new Intent(this, EpcInOutActivity.class);
-                intent.putExtra("type", 1);
-                startActivity(intent);
+                break;
+            case R.id.store_in_rlyt:
+                if (DeviceUtil.getDeviceId() == DeviceUtil.SUPOIN)
+                {
+                    Intent intent = new Intent(this, SupoinEpcInOutActivity.class);
+                    intent.putExtra("type", 2);
+                    startActivity(intent);
+                } else if (DeviceUtil.getDeviceId() == DeviceUtil.HOPELAND)
+                {
+                    propertiesInstance = Adapt.getPropertiesInstance();
+                    if (!propertiesInstance.support("UHF"))
+                    {
+                        ToastUtil.toast("该设备不支持高频读写");
+                        return;
+                    }
+                    if (!propertiesInstance.support("UHF"))
+                    {
+                        ToastUtil.toast("该设备不支持高频读写");
+                        return;
+                    }
+                    Intent intent = new Intent(this, EpcInOutActivity.class);
+                    intent.putExtra("type", 2);
+                    startActivity(intent);
+                }
                 break;
             case R.id.check_rlyt:
-                if (DeviceUtil.getDefaultDeviceId() == DeviceUtil.SUPOIN)
+                if (DeviceUtil.getDeviceId() == DeviceUtil.SUPOIN)
                 {
-                    startActivity(new Intent(this, HopeLandEpcCheckActivity.class));
-                } else if (DeviceUtil.getDefaultDeviceId() == DeviceUtil.HOPELAND)
+                    startActivity(new Intent(this, SupoinEpcCheckActivity.class));
+                } else if (DeviceUtil.getDeviceId() == DeviceUtil.HOPELAND)
                 {
                     startActivity(new Intent(this, EpcCheckActivity.class));
                 }
                 break;
             case R.id.more_rlyt:
-                if (DeviceUtil.getDefaultDeviceId() == DeviceUtil.SUPOIN)
-                {
-                    ToastUtil.toast("暂无此功能");
-                    return;
-                }
                 startActivity(new Intent(this, MoreActivity.class));
                 break;
             case R.id.scan_rlyt:
@@ -325,7 +365,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
                     Toast.makeText(this, "解析结果:" + epcResult, Toast.LENGTH_LONG).show();
                     if (epcResult != null)
                     {
-                        mPresenter.getProductInfo(epcResult.replace("\n", "").trim());
+                        mPresenter.getProductInfo(DataUtil.convertStringToHex(epcResult.replace("\n", "")).trim());
                     }
                 } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED)
                 {

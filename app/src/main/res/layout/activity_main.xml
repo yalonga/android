@@ -104,6 +104,23 @@
                 android:layout_weight="1">
 
                 <RelativeLayout
+                    android:id="@+id/store_in_rlyt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/store_int_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:drawablePadding="8dp"
+                        android:drawableTop="@mipmap/ic_int"
+                        android:gravity="center"
+                        android:text="@string/store_in"/>
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:id="@+id/check_rlyt"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -119,6 +136,14 @@
                         android:gravity="center"
                         android:text="@string/main_check"/>
                 </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
                 <RelativeLayout
                     android:id="@+id/scan_rlyt"
@@ -136,12 +161,6 @@
                         android:gravity="center"
                         android:text="@string/main_scan"/>
                 </RelativeLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
 
                 <RelativeLayout
                     android:id="@+id/more_rlyt"
@@ -158,20 +177,6 @@
                         android:drawableTop="@mipmap/ic_more"
                         android:gravity="center"
                         android:text="@string/main_more"/>
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:drawablePadding="8dp"
-                        android:gravity="center"
-                        />
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>

@@ -13,6 +13,7 @@ import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.clouiotech.util.Helper.Helper_ThreadPool;
 import com.ioter.hopeland.Comm;
 import com.ioter.hopeland.uhf.UHF5Base.CMD;
 import com.ioter.hopeland.uhf.UHF5Base.ReaderBase;
@@ -195,12 +196,14 @@ public class RFIDOperate {
         m_curReaderSetting.btWorkAntenna = btWorkAntenna;
         mLoopHandler.removeCallbacks(mLoopRunnable);
         mLoopHandler.postDelayed(mLoopRunnable, Comm.rfidSleep);
+        IsFlushList = true;
     }
 
     public void stop() {
         mReaderHelper.setInventoryFlag(false);
         m_curInventoryBuffer.bLoopInventoryReal = false;
         mLoopHandler.removeCallbacks(mLoopRunnable);
+        IsFlushList = false;
         refreshText();
     }
 
@@ -250,6 +253,8 @@ public class RFIDOperate {
         TagsTotaltext = mtagstotal;
     }
 
+    private Boolean IsFlushList = true; // 是否刷列表
+
     public final BroadcastReceiver mRecv = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -264,7 +269,25 @@ public class RFIDOperate {
                         mLoopHandler.removeCallbacks(mLoopRunnable);
                         mLoopHandler.postDelayed(mLoopRunnable, Comm.rfidSleep);
                         //playSound();
-                        refreshText();
+                        // 刷新线程
+                        Helper_ThreadPool.ThreadPool_StartSingle(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                while (IsFlushList)
+                                {
+                                    try
+                                    {
+                                        Thread.sleep(1000); // 一秒钟刷新一次
+                                        refreshText();;
+                                    } catch (InterruptedException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
                         break;
                     case ReaderHelper.INVENTORY_ERR:
                     case ReaderHelper.INVENTORY_ERR_END:
@@ -275,7 +298,25 @@ public class RFIDOperate {
                         } else {
                             mLoopHandler.removeCallbacks(mLoopRunnable);
                         }
-                        refreshText();
+                        // 刷新线程
+                        Helper_ThreadPool.ThreadPool_StartSingle(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                while (IsFlushList)
+                                {
+                                    try
+                                    {
+                                        Thread.sleep(1000); // 一秒钟刷新一次
+                                        refreshText();;
+                                    } catch (InterruptedException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
                         break;
                 }
             }
@@ -419,6 +460,7 @@ public class RFIDOperate {
         if (lbm != null)
             lbm.unregisterReceiver(mRecv);
         mLoopHandler.removeCallbacks(mLoopRunnable);
+        IsFlushList = false;
     }
 
     public static boolean setUHF5Parameters() {

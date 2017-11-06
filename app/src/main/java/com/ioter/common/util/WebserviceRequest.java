@@ -2,7 +2,6 @@ package com.ioter.common.util;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.ioter.AppApplication;
@@ -20,7 +19,7 @@ public class WebserviceRequest
 
         public abstract void onNext(String result);
 
-        public abstract void onError(String error);
+        public abstract void onError(Throwable e);
 
         public abstract void onComplete();
     }
@@ -30,16 +29,7 @@ public class WebserviceRequest
     public static final int RESULT_EXCEPTION = -2;// 执行异常
     public static final int RESULT_DESTROY = -3;// 操作已被取消
 
-    private boolean mIsDestroy;
     private Handler mHandler;
-
-    /**
-     * 销毁，取消操作时执行
-     */
-    public void destroy()
-    {
-        mIsDestroy = true;
-    }
 
     public void submit(final SoapObject request, final String url, final String soapAction, final WebCallback callback)
     {
@@ -51,11 +41,6 @@ public class WebserviceRequest
             {
                 try
                 {
-                    if (mIsDestroy)
-                    {
-                        postUI(RESULT_DESTROY, null, callback);
-                        return;
-                    }
                     String result = "";
                     // 创建soap 数据
                     SoapSerializationEnvelope soapEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
@@ -69,20 +54,10 @@ public class WebserviceRequest
                         SoapObject object = (SoapObject) soapEnvelope.bodyIn;
                         result = object.getProperty(0).toString();
                     }
-                    if (mIsDestroy)
-                    {
-                        postUI(RESULT_DESTROY, null, callback);
-                        return;
-                    }
                     postUI(RESULT_OK, result, callback);
                 } catch (Exception e) // 执行异常的情况
                 {
-                    if (mIsDestroy)
-                    {
-                        postUI(RESULT_DESTROY, null, callback);
-                        return;
-                    }
-                    postUI(RESULT_EXCEPTION, null, callback);
+                    postUI(RESULT_EXCEPTION, e, callback);
                 }
             }
         });
@@ -95,7 +70,7 @@ public class WebserviceRequest
      * @param result
      * @param callback
      */
-    private void postUI(final int resultStatus, final String result, final WebCallback callback)
+    private void postUI(final int resultStatus, final Object result, final WebCallback callback)
     {
         if (mHandler == null)
         {
@@ -106,25 +81,15 @@ public class WebserviceRequest
             @Override
             public void run()
             {
-                try
+                Log.e("WebserviceResult", result.toString());
+                if (resultStatus == RESULT_OK)
                 {
-                    if (mIsDestroy)
-                    {
-                        callback.onError("无数据");
-                        return;
-                    }
-                    Log.e("WebserviceResult", result);
-                    if (TextUtils.isEmpty(result))
-                    {
-                        callback.onError("无数据");
-                        callback.onComplete();
-                        return;
-                    }
-                    callback.onNext(result);
+                    callback.onNext((String) result);
                     callback.onComplete();
-                } catch (Exception e)
+                } else
                 {
-                    Log.d("request", "postUI:" + resultStatus + e);
+                    //客户端请求异常
+                    callback.onError((Exception) result);
                 }
             }
         });

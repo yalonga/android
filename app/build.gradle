@@ -3,6 +3,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'ioter'
+            keyPassword 'android'
+            storeFile file('D:/workspace_studio/ioter.jks')
+            storePassword 'android'
+        }
+    }
     compileSdkVersion 24
     buildToolsVersion '25.0.0'
     defaultConfig {
@@ -12,7 +20,10 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.config
+        //multiDexEnabled true
     }
+    dexOptions { incremental true javaMaxHeapSize "4g" }
     buildTypes {
         release {
             minifyEnabled false
@@ -23,7 +34,41 @@ android {
         main {
             jniLibs.srcDirs = ['libs']
         }
+        supion {
+            java.srcDirs = ['src/supion', 'src/supion/java', 'src/supion/java/']
+        }
+        hopeland {
+            java.srcDirs = ['src/hopeland', 'src/hopeland/java', 'src/hopeland/java/']
+        }
     }
+    productFlavors {
+        supion {
+        }
+        hopeland {
+        }
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+
+            def appName = 'Ioter'
+            def oldFile = output.outputFile
+            def buildName
+
+            variant.productFlavors.each { product ->
+                buildName = product.name
+            }
+
+            output.outputFile = new File(
+                    output.outputFile.parent + "/${variant.buildType.name}",
+                    appName + "-" + getDate() + "-" + "${variant.buildType.name}-${variant.versionName}-" + buildName + ".apk".toLowerCase())
+        }
+    }
+}
+
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMddHHmm')
+    return formattedDate
 }
 
 dependencies {
@@ -78,7 +123,6 @@ dependencies {
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.8.0'
     compile 'com.jakewharton.rxbinding:rxbinding:1.0.1'
     compile 'com.hwangjr.rxbus:rxbus:1.0.5'
-
     compile files('libs/classes.jar')
     compile files('libs/DeviceAPIver20150906.jar')
     compile files('libs/hitownsdk.jar')
@@ -86,5 +130,5 @@ dependencies {
     compile files('libs/ModuleAPI_Android_3.0.1.0.jar')
     compile files('libs/trinea-android-common.jar')
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
-
+    compile files('libs/lib_Reader_fat.jar')
 }

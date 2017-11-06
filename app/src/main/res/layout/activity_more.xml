@@ -1,85 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/common_background_color" >
-    
-	<include layout="@layout/include_common_bar"/>
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/common_background_color"
+              android:orientation="vertical">
 
-	<LinearLayout
-	    android:id="@+id/setting_llyt"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:gravity="center_vertical"
-	    android:padding="@dimen/common_margin_size"
-	    android:layout_marginTop="@dimen/common_margin_size"
-	    android:background="@color/white" >
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/AppTheme.ToolBar"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:title="@string/app_name"
+        />
 
-		<TextView
-		    android:layout_width="0dp"
-		    android:layout_height="wrap_content"
-		    android:text="@string/setting"
-		    android:textColor="@color/common_text_color"
-		    android:textSize="14sp"
-		    android:layout_weight="1" />
+    <LinearLayout
+        android:id="@+id/setting_llyt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_size"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:padding="@dimen/common_margin_size">
 
-		<ImageView
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:src="@mipmap/ic_arrow"
-		    android:contentDescription="@mipmap/ic_arrow" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/setting"
+            android:textColor="@color/common_text_color"
+            android:textSize="14sp"/>
 
-	</LinearLayout>
-	
-	<LinearLayout
-	    android:id="@+id/epc_read_llyt"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:gravity="center_vertical"
-	    android:padding="@dimen/common_margin_size"
-	    android:layout_marginTop="@dimen/common_margin_size"
-	    android:background="@color/white" >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@mipmap/ic_arrow"
+            android:src="@mipmap/ic_arrow"/>
 
-		<TextView
-		    android:layout_width="0dp"
-		    android:layout_height="wrap_content"
-		    android:text="@string/readEpc"
-		    android:textColor="@color/common_text_color"
-		    android:textSize="14sp"
-		    android:layout_weight="1" />
+    </LinearLayout>
 
-		<ImageView
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:src="@mipmap/ic_arrow"
-		    android:contentDescription="@mipmap/ic_arrow" />
+    <LinearLayout
+        android:id="@+id/epc_read_llyt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_size"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:padding="@dimen/common_margin_size">
 
-	</LinearLayout>
-	
-	<LinearLayout
-	    android:id="@+id/versions_llyt"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:gravity="center_vertical"
-	    android:padding="@dimen/common_margin_size"
-	    android:layout_marginTop="@dimen/common_margin_size"
-	    android:background="@color/white" >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/readEpc"
+            android:textColor="@color/common_text_color"
+            android:textSize="14sp"/>
 
-		<TextView
-		    android:layout_width="0dp"
-		    android:layout_height="wrap_content"
-		    android:text="@string/versions"
-		    android:textColor="@color/common_text_color"
-		    android:textSize="14sp"
-		    android:layout_weight="1" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@mipmap/ic_arrow"
+            android:src="@mipmap/ic_arrow"/>
 
-		<ImageView
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:src="@mipmap/ic_arrow"
-		    android:contentDescription="@mipmap/ic_arrow" />
+    </LinearLayout>
 
-	</LinearLayout>
-    
+    <LinearLayout
+        android:id="@+id/versions_llyt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_size"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:padding="@dimen/common_margin_size">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/versions"
+            android:textColor="@color/common_text_color"
+            android:textSize="14sp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@mipmap/ic_arrow"
+            android:src="@mipmap/ic_arrow"/>
+
+    </LinearLayout>
+
 </LinearLayout>

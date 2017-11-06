@@ -23,7 +23,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
 
 
     <application
@@ -54,7 +54,7 @@
             android:name="com.ioter.ui.activity.LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Notitle"/>
+            android:theme="@style/AppTheme.Notitle.FullScreen"/>
         <activity
             android:name="com.ioter.ui.activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -65,43 +65,56 @@
             android:name="com.ioter.ui.activity.MoreActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Notitle">
+            android:theme="@style/AppTheme.Notitle.FullScreen">
         </activity>
         <activity
             android:name="com.ioter.ui.activity.SettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Notitle">
+            android:theme="@style/AppTheme.Notitle.FullScreen">
         </activity>
         <activity
             android:name="com.ioter.ui.activity.ScanResultActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Notitle"/>
+            android:theme="@style/AppTheme.Notitle.FullScreen"/>
         <activity
             android:name="com.ioter.ui.activity.EpcCheckActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Notitle"/>
+            android:theme="@style/AppTheme.Notitle.FullScreen"/>
         <activity
             android:name="com.ioter.ui.activity.EpcInOutActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Notitle"/>
+            android:theme="@style/AppTheme.Notitle.FullScreen"/>
         <activity
             android:name="com.ioter.ui.activity.EpcReadActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Notitle"/>
+            android:theme="@style/AppTheme.Notitle.FullScreen"/>
 
         <activity
-            android:name="com.ioter.hopeland.HopeLandEpcCheckActivity"
+            android:name="com.ioter.hopeland.SupoinEpcCheckActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Notitle"/>
+            android:theme="@style/AppTheme.Notitle.FullScreen"/>
+
+        <activity
+            android:name="com.ioter.hopeland.SupoinEpcInOutActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Notitle.FullScreen"/>
+
+        <activity
+            android:name="com.ioter.hopeland.SupoinEpcReadActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Notitle.FullScreen"/>
+
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version"/>
     </application>
 
 </manifest>

@@ -1,14 +1,11 @@
 package com.ioter.ui.activity;
 
-import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.hwangjr.rxbus.RxBus;
+import com.ioter.R;
 import com.ioter.di.component.AppComponent;
 import com.ioter.di.component.DaggerLoginComponent;
 import com.ioter.di.module.LoginModule;
@@ -17,12 +14,8 @@ import com.ioter.presenter.contract.LoginContract;
 import com.ioter.ui.widget.LoadingButton;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.mikepenz.iconics.IconicsDrawable;
-import com.ioter.R;
-import com.mikepenz.ionicons_typeface_library.Ionicons;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func2;
@@ -68,13 +61,13 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     {
 
 
-        mToolBar.setNavigationIcon(
+/*        mToolBar.setNavigationIcon(
                 new IconicsDrawable(this)
                         .icon(Ionicons.Icon.ion_ios_arrow_back)
                         .sizeDp(16)
                         .color(getResources().getColor(R.color.md_white_1000)
                         )
-        );
+        );*/
 
 
         Observable<CharSequence> obMobi = RxTextView.textChanges(mTxtMobi);

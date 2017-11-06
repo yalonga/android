@@ -2,8 +2,15 @@ package com.ioter.di.module;
 
 import android.app.Application;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.ioter.common.util.WebserviceRequest;
 
+import java.lang.reflect.Type;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,12 +37,12 @@ public class AppModule
         return mApplication;
     }
 
-/*    @Provides
+    @Provides
     @Singleton
     public ExecutorService provideExecutorService()
     {
         return Executors.newFixedThreadPool(24);
-    }*/
+    }
 
     @Provides
     @Singleton
@@ -44,5 +51,24 @@ public class AppModule
         return new WebserviceRequest();
     }
 
+    @Provides
+    @Singleton
+    public Gson provideGson()
+    {
+        Gson gson = new GsonBuilder()
 
+                .setDateFormat("yyyy-MM-dd hh:mm:ss")
+                .registerTypeAdapter(Double.class, new JsonSerializer<Double>() {
+                    @Override
+                    public JsonElement serialize(Double src, Type typeOfSrc, JsonSerializationContext context) {
+                        if (src == src.longValue())
+                            return new JsonPrimitive(src.longValue());
+
+                        return new JsonPrimitive(src);
+                    }
+                })
+                .create();
+
+        return gson;
+    }
 }

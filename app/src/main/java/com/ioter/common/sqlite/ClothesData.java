@@ -10,6 +10,7 @@ public class ClothesData implements Serializable
     private static final long serialVersionUID = -3055030985087768871L;
     
     public String mEpc; // EPC编号
+    public String mTotalCount; //
     public String mStyleNum; // 款号
     public String mName; // 品名
     public String mModel; // 规格型号

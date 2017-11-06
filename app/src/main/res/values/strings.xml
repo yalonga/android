@@ -36,6 +36,7 @@
     <!-- 主页 -->
     <string name="main_out">出库</string>
     <string name="main_in">入库</string>
+    <string name="store_in">入店</string>
     <string name="main_check">盘点</string>
     <string name="main_scan">扫描查询</string>
     <string name="main_more">更多</string>

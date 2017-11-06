@@ -1,31 +1,26 @@
-package com.ioter.ui.activity;
+package com.ioter.hopeland;
 
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.clouiotech.pda.rfid.EPCModel;
-import com.ioter.AppApplication;
 import com.ioter.R;
-import com.ioter.bean.EpcInOutData;
 import com.ioter.common.sqlite.ClothesData;
-import com.ioter.common.util.SettingSPUtil;
 import com.ioter.common.util.ToastUtil;
 import com.ioter.di.component.AppComponent;
 import com.ioter.di.component.DaggerCheckComponent;
 import com.ioter.di.module.CheckModule;
 import com.ioter.presenter.contract.CheckContract;
+import com.ioter.ui.adapter.DefaultCheckAdapter;
 import com.ioter.ui.adapter.SelectPop;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.ionicons_typeface_library.Ionicons;
@@ -35,48 +30,56 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import butterknife.BindView;
 
+import static com.ioter.hopeland.Comm.Awl;
+
 /**
- * 出入库
+ * 盘点
  *
+ * @author hzj
  */
-public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.CheckView
+public class SupoinEpcCheckActivity extends SupoinUHFBaseActivity implements CheckContract.CheckView, DefaultCheckAdapter.IEpcCheck
 {
-    /**
-     * 0 出库 1 入库
-     **/
-    private int mType;
     private int mWarehouseId; // 仓库id;
     private int mShelfId; // 货架id;
     private String mStroeName; // 门店
-    private int mReceiveStoreId; // 门店id
     private int mWarehousePosition;
     private int mShelfPosition;
-    private int mStorePosition;
     private JSONArray mWarehouseData;
     private JSONArray mStoreData;
 
     private TextView mWarehouseTv;
     private TextView mShelfTv;
     private TextView mStoreTv;
-    private MyAdapter mAdapter;
-    private Object hmList_Lock = new Object();
-    private HashMap<String, EPCModel> mCacheList = new HashMap<String, EPCModel>();
-    private ArrayList<EPCModel> mEpcList = new ArrayList<>();
+    private DefaultCheckAdapter mAdapter;
     @BindView(R.id.read_btn)
     Button mReadBtn;
     @BindView(R.id.commit_btn)
     Button mCommitBtn;
+    @BindView(R.id.check_num_tv)
+    TextView mCheckTv;
+    @BindView(R.id.un_check_num_tv)
+    TextView mUnCheckTv;
+    @BindView(R.id.recycle_view)
+    RecyclerView mRecyclerView;
+
     @BindView(R.id.tool_bar)
     Toolbar mToolBar;
+
+    int mID;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public int setLayout()
     {
-        return R.layout.activity_epc_inout;
+        return R.layout.activity_epc_check;
     }
 
     @Override
@@ -88,18 +91,9 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
     @Override
     public void init()
     {
-        mType = getIntent().getIntExtra("type", 0);
+        super.init();
         initTitle();
         initView();
-        takeWarehouseData();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void initTitle()
@@ -111,7 +105,6 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
                         .color(getResources().getColor(R.color.md_white_1000)
                         )
         );
-        mToolBar.setTitle(getTitleName(mType));
         mToolBar.setNavigationOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -122,44 +115,52 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
         });
     }
 
-    private String getTitleName(int type)
-    {
-        switch (type)
-        {
-            case 0:
-                return "出库";
-            case 1:
-                return "入库";
-            case 2:
-                return "入店";
-        }
-        return "";
-    }
-
     private void initView()
     {
+        mReadBtn.setOnClickListener(this);
+
+        //为RecyclerView设置布局管理器
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        //动画
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+
         mWarehouseTv = (TextView) findViewById(R.id.warehouse_tv);
         mShelfTv = (TextView) findViewById(R.id.shelf_tv);
         mStoreTv = (TextView) findViewById(R.id.store_tv);
+        mCommitBtn.setOnClickListener(this);
         findViewById(R.id.warehouse_llyt).setOnClickListener(this);
         findViewById(R.id.shelf_llyt).setOnClickListener(this);
         findViewById(R.id.store_llyt).setOnClickListener(this);
-        mReadBtn.setOnClickListener(this);
-        mCommitBtn.setText(getTitleName(mType));
-        mCommitBtn.setOnClickListener(this);
-        ListView epcLv = (ListView) findViewById(R.id.epc_lv);
-        mAdapter = new MyAdapter();
-        epcLv.setAdapter(mAdapter);
+
+        takeWarehouseData();
+
+        takeTaskList();
+
     }
 
-    @Override
-    protected void ShowList()
+    private void takeWarehouseData()
     {
-        if (!isStartPingPong)
-            return;
-        synchronized (hmList_Lock)
+        mPresenter.getWarehouseData(2);
+    }
+
+
+    /**
+     * 获取要盘点的清单列表
+     */
+    private void takeTaskList()
+    {
+        mPresenter.getCheckList();
+    }
+
+
+    @Override
+    protected void showlist(ArrayList<EpcBeen> mEpcList)
+    {
+        if (mAdapter != null)
         {
-            mAdapter.update(mEpcList);
+            mAdapter.updateBeen(mEpcList);
         }
     }
 
@@ -175,7 +176,7 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
                 wareList.add(mWarehouseData.getJSONObject(i).getString("WhName"));
             }
             mWarehouseSelectPop.updateData(wareList);
-            mWarehouseSelectPop.setonItemClickListener(new OnItemClickListener()
+            mWarehouseSelectPop.setonItemClickListener(new AdapterView.OnItemClickListener()
             {
 
                 @Override
@@ -212,19 +213,17 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
                 storeList.add(mStoreData.getJSONObject(i).getString("StoreName"));
             }
             mStoreSelectPop.updateData(storeList);
-            mStoreSelectPop.setonItemClickListener(new OnItemClickListener()
+            mStoreSelectPop.setonItemClickListener(new AdapterView.OnItemClickListener()
             {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    mStorePosition = position;
                     try
                     {
                         JSONObject jsonObject = mStoreData.getJSONObject(position);
                         mStoreTv.setText(jsonObject.getString("StoreName"));
                         mStroeName = jsonObject.getString("StoreName");
-                        mReceiveStoreId = jsonObject.getInt("ID");
                     } catch (JSONException e)
                     {
                         e.printStackTrace();
@@ -253,7 +252,7 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
                 shelfList.add(shelfArray.getJSONObject(i).getString("WhSiteName"));
             }
             mShelfSelectPop.updateData(shelfList);
-            mShelfSelectPop.setonItemClickListener(new OnItemClickListener()
+            mShelfSelectPop.setonItemClickListener(new AdapterView.OnItemClickListener()
             {
 
                 @Override
@@ -280,6 +279,7 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
         }
         mShelfSelectPop.showAtLocation(v, Gravity.CENTER, 0, 0);
     }
+
 
     @Override
     public void onClick(View v)
@@ -329,11 +329,54 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
                     ToastUtil.toast("请先设置门店");
                     return;
                 }
-                readEpc(v);
+                readEpc();
                 break;
-
             default:
                 break;
+        }
+    }
+
+    /**
+     * 将已盘点的EPC列表提交到后台
+     */
+    private void submitEpcList()
+    {
+        ArrayList<String> checkedEpcList = mAdapter.getCheckedEpcList();
+        if (checkedEpcList.size() == 0)
+        {
+            ToastUtil.toast("没有可提交数据");
+            return;
+        }
+        mPresenter.submitEpcList(checkedEpcList, mID);
+    }
+
+
+    /**
+     * 读功能
+     */
+    @Override
+    protected void readEpc()
+    {
+        String controlText = mReadBtn.getText().toString();
+        if (controlText.equals(getString(R.string.start)))
+        {
+            try
+            {
+                Awl.WakeLock();
+                Comm.startScan();
+            } catch (Exception ex)
+            {
+                Toast.makeText(this,
+                        "ERR：" + ex.getMessage(), Toast.LENGTH_SHORT)
+                        .show();
+            }
+            mReadBtn.setText(getString(R.string.stop));
+        } else
+        {
+            Awl.ReleaseWakeLock();
+            Comm.stopScan();
+            mReadBtn.setText(getString(R.string.start));
+            mAdapter.sortDataList();
         }
     }
 
@@ -346,31 +389,24 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
         finish();
     }
 
-    private void readEpc(View v)
-    {
-        Button btnRead = (Button) v;
-        String controlText = btnRead.getText().toString();
-        if (controlText.equals(getString(R.string.start)))
-        {
-            Pingpong_Read();
-            btnRead.setText(getString(R.string.stop));
-        } else
-        {
-            Pingpong_Stop();
-            btnRead.setText(getString(R.string.start));
-        }
-    }
 
     @Override
     public void updateList(ArrayList<ClothesData> list)
     {
-
+        if (mAdapter == null)
+        {
+            mAdapter = new DefaultCheckAdapter();
+            mRecyclerView.setAdapter(mAdapter);
+            mAdapter.setCheckedCountListener(this);
+        }
+        mAdapter.setNewData(list);
     }
+
 
     @Override
     public void setId(int id)
     {
-
+        mID = id;
     }
 
     @Override
@@ -380,7 +416,6 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
         {
             mWarehouseData = object.getJSONArray("ListWh");
             mStoreData = object.getJSONArray("ListStore");
-            //initSp();
         } catch (JSONException e)
         {
             e.printStackTrace();
@@ -388,190 +423,10 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
         }
     }
 
-
     @Override
-    public void OutPutEPC(EPCModel model)
+    public void checkedCount(int totalCount, int count)
     {
-        super.OutPutEPC(model);
-        try
-        {
-            synchronized (hmList_Lock)
-            {
-                if (mCacheList.containsKey(model._EPC + model._TID))
-                {
-                    EPCModel tModel = mCacheList.get(model._EPC + model._TID);
-                    tModel._TotalCount++;
-                } else
-                {
-                    mCacheList.put(model._EPC + model._TID, model);
-                    mEpcList.add(model);
-                }
-            }
-        } catch (Exception ex)
-        {
-            Log.e("Debug", "标签输出异常：" + ex.getMessage());
-        }
+        mCheckTv.setText("已盘点：" + count);
+        mUnCheckTv.setText("未盘点：" + (totalCount - count));
     }
-
-    private class MyAdapter extends BaseAdapter
-    {
-
-        private ArrayList<EpcInOutData> mDataList;
-
-        public MyAdapter()
-        {
-            mDataList = new ArrayList<EpcInOutData>();
-        }
-
-        public void update(ArrayList<EPCModel> dataList)
-        {
-            if (dataList.size() == 0)
-            {
-                return;
-            }
-            for (EPCModel epcModel : dataList)
-            {
-                EpcInOutData epcInData = new EpcInOutData();
-                epcInData.InWhID = mWarehouseId;
-                epcInData.InWhSiteID = mShelfId;
-                epcInData.InUserID = 2;
-                epcInData.EPC = epcModel._EPC;
-                mDataList.add(epcInData);
-            }
-            dataList.clear();
-            notifyDataSetChanged();
-        }
-
-        public ArrayList<EpcInOutData> getDataList()
-        {
-            return mDataList;
-        }
-
-        @Override
-        public int getCount()
-        {
-            return mDataList.size();
-        }
-
-        @Override
-        public EpcInOutData getItem(int position)
-        {
-            return mDataList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position)
-        {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
-            ViewHolder holder;
-            if (convertView == null)
-            {
-                convertView = getLayoutInflater().inflate(R.layout.listitem_epc_inout, parent, false);
-                holder = new ViewHolder();
-                holder.numTv = (TextView) convertView.findViewById(R.id.num_tv);
-                holder.epcTv = (TextView) convertView.findViewById(R.id.epc_tv);
-                holder.shelfTv = (TextView) convertView.findViewById(R.id.shelf_tv);
-                holder.divideV = convertView.findViewById(R.id.divide_v);
-                convertView.setTag(holder);
-            } else
-            {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            EpcInOutData item = getItem(position);
-            holder.numTv.setText(position + 1 + "");
-            holder.epcTv.setText(item.EPC + "");
-            holder.shelfTv.setText(item.InWhSiteID + "");
-            if (position == getCount() - 1)
-            {
-                holder.divideV.setVisibility(View.GONE);
-            } else
-            {
-                holder.divideV.setVisibility(View.VISIBLE);
-            }
-            return convertView;
-        }
-
-        private class ViewHolder
-        {
-            TextView numTv;
-            TextView epcTv;
-            TextView shelfTv;
-            View divideV;
-        }
-
-    }
-
-    /**
-     * 获取仓库及货架数据
-     */
-    private void takeWarehouseData()
-    {
-        mPresenter.getWarehouseData(2);
-    }
-
-    /**
-     * 从SharedPreferences中获取之前设置的仓库和货架id
-     */
-    private void initSp()
-    {
-        int warehouseId = SettingSPUtil.getInt(SettingSPUtil.Warehouse_Id + "_" + mType);
-        int shelfId = SettingSPUtil.getInt(SettingSPUtil.Shelf_Id + "_" + mType);
-        try
-        {
-            for (int i = 0; i < mWarehouseData.length(); i++)
-            {
-                JSONObject object = mWarehouseData.getJSONObject(i);
-                int wareID = object.getInt("ID");
-                if (wareID == warehouseId)
-                {
-                    mWarehouseId = wareID;
-                    mWarehouseTv.setText(object.getString("WhName"));
-                    JSONArray shelfArray = object.getJSONArray("ListWhSite");
-                    for (int j = 0; j < shelfArray.length(); j++)
-                    {
-                        JSONObject shelfObject = shelfArray.getJSONObject(j);
-                        int id = shelfObject.getInt("ID");
-                        if (id == shelfId)
-                        {
-                            mShelfId = shelfId;
-                            mShelfTv.setText(shelfObject.getString("WhSiteName"));
-                            break;
-                        }
-                    }
-                    break;
-                }
-
-            }
-        } catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 提交入库EPC数据
-     */
-    private void submitEpcList()
-    {
-        ArrayList<EpcInOutData> dataList = mAdapter.getDataList();
-        if (dataList.size() == 0)
-        {
-            ToastUtil.toast("没有可提交的数据");
-            return;
-        }
-        ArrayList<String> list = new ArrayList<>();
-        for (int i = 0; i < dataList.size(); i++)
-        {
-            EpcInOutData epcInOutData = dataList.get(i);
-            list.add(epcInOutData.EPC);
-        }
-        mPresenter.submitWarehouseEpcList(AppApplication.getGson().toJson(list), mWarehouseId, mShelfId, "trackingNo", mReceiveStoreId, 2, mType);
-    }
-
 }

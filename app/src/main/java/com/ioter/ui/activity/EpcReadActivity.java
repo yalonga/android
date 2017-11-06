@@ -1,13 +1,8 @@
 package com.ioter.ui.activity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,6 +15,16 @@ import com.clouiotech.pda.rfid.EPCModel;
 import com.ioter.R;
 import com.ioter.common.util.UIConstant;
 import com.ioter.di.component.AppComponent;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.ionicons_typeface_library.Ionicons;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import butterknife.BindView;
 
 public class EpcReadActivity extends UHFBaseActivity
 {
@@ -36,29 +41,31 @@ public class EpcReadActivity extends UHFBaseActivity
     private SimpleAdapter sa;
     private Object hmList_Lock = new Object();
     private HashMap<String, EPCModel> hmList = new HashMap<String, EPCModel>();
-    
+    @BindView(R.id.tool_bar)
+    Toolbar mToolBar;
+
     @Override
     protected void msgProcess(Message msg)
     {
         super.msgProcess(msg);
         switch (msg.what)
         {
-        case UIConstant.MSG_FLUSH_READTIME:
-            if (lb_ReadTime != null) { // 刷新读取时间
-                readTime++;
-                lb_ReadTime.setText("Time:" + readTime + "S");
-            }
-            break;
-        default:
-            super.msgProcess(msg);
-            break;
+            case UIConstant.MSG_FLUSH_READTIME:
+                if (lb_ReadTime != null)
+                { // 刷新读取时间
+                    readTime++;
+                    lb_ReadTime.setText("Time:" + readTime + "S");
+                }
+                break;
+            default:
+                super.msgProcess(msg);
+                break;
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -79,6 +86,7 @@ public class EpcReadActivity extends UHFBaseActivity
     @Override
     public void init()
     {
+        initTitle();
         initView();
     }
 
@@ -90,6 +98,26 @@ public class EpcReadActivity extends UHFBaseActivity
             return;
         }
         finish();
+    }
+
+    private void initTitle()
+    {
+        mToolBar.setNavigationIcon(
+                new IconicsDrawable(this)
+                        .icon(Ionicons.Icon.ion_ios_arrow_back)
+                        .sizeDp(16)
+                        .color(getResources().getColor(R.color.md_white_1000)
+                        )
+        );
+        mToolBar.setNavigationOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                finish();
+            }
+        });
+
     }
 
     private void initView()
@@ -109,36 +137,43 @@ public class EpcReadActivity extends UHFBaseActivity
         if (!isStartPingPong)
             return;
         sa = new SimpleAdapter(this, GetData(), R.layout.epclist_item,
-                new String[] { "EPC", "ReadCount" }, new int[] {
-                        R.id.EPCList_TagID, R.id.EPCList_ReadCount });
+                new String[]{"EPC", "ReadCount"}, new int[]{
+                R.id.EPCList_TagID, R.id.EPCList_ReadCount});
         listView.setAdapter(sa);
         listView.invalidate();
-        if (lb_ReadTime != null) { // 刷新读取时间
+        if (lb_ReadTime != null)
+        { // 刷新读取时间
             readTime++;
             lb_ReadTime.setText("Time:" + readTime / 1 + "S");
         }
-        if (lb_ReadSpeed != null) { // 刷新读取速度
+        if (lb_ReadSpeed != null)
+        { // 刷新读取速度
             speed = totalReadCount - lastReadCount;
             if (speed < 0)
                 speed = 0;
             lastReadCount = totalReadCount;
-            if (lb_ReadSpeed != null) {
+            if (lb_ReadSpeed != null)
+            {
                 lb_ReadSpeed.setText("SP:" + speed + "T/S");
             }
         }
-        if (lb_TagCount != null) { // 刷新标签总数
+        if (lb_TagCount != null)
+        { // 刷新标签总数
             lb_TagCount.setText("Total:" + hmList.size());
         }
     }
-    
- // 获得更新数据源
-    @SuppressWarnings({ "rawtypes", "unused" })
-    protected List<Map<String, Object>> GetData() {
+
+    // 获得更新数据源
+    @SuppressWarnings({"rawtypes", "unused"})
+    protected List<Map<String, Object>> GetData()
+    {
         List<Map<String, Object>> rt = new ArrayList<Map<String, Object>>();
-        synchronized (hmList_Lock) {
+        synchronized (hmList_Lock)
+        {
             // if(hmList.size() > 0){ //
             Iterator iter = hmList.entrySet().iterator();
-            while (iter.hasNext()) {
+            while (iter.hasNext())
+            {
                 Map.Entry entry = (Map.Entry) iter.next();
                 String key = (String) entry.getKey();
                 EPCModel val = (EPCModel) entry.getValue();
@@ -151,7 +186,7 @@ public class EpcReadActivity extends UHFBaseActivity
         }
         return rt;
     }
-    
+
     @Override
     protected void Clear()
     {
@@ -180,14 +215,17 @@ public class EpcReadActivity extends UHFBaseActivity
         btn_Read.setText(getString(R.string.start));
         btn_Read.setClickable(true);
     }
-    
-    public void Read(View v) {
+
+    public void Read(View v)
+    {
         Button btnRead = (Button) v;
         String controlText = btnRead.getText().toString();
-        if (controlText.equals(getString(R.string.start))) {
+        if (controlText.equals(getString(R.string.start)))
+        {
             Pingpong_Read();
             btnRead.setText(getString(R.string.stop));
-        } else {
+        } else
+        {
             Pingpong_Stop();
             btnRead.setText(getString(R.string.start));
         }
@@ -198,17 +236,22 @@ public class EpcReadActivity extends UHFBaseActivity
     {
         // TODO Auto-generated method stub
         super.OutPutEPC(model);
-        try {
-            synchronized (hmList_Lock) {
-                if (hmList.containsKey(model._EPC + model._TID)) {
+        try
+        {
+            synchronized (hmList_Lock)
+            {
+                if (hmList.containsKey(model._EPC + model._TID))
+                {
                     EPCModel tModel = hmList.get(model._EPC + model._TID);
                     tModel._TotalCount++;
-                } else {
+                } else
+                {
                     hmList.put(model._EPC + model._TID, model);
                 }
             }
             totalReadCount++;
-        } catch (Exception ex) {
+        } catch (Exception ex)
+        {
             Log.d("Debug", "标签输出异常：" + ex.getMessage());
         }
     }

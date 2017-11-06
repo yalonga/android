@@ -2,6 +2,7 @@ package com.ioter;
 
 import android.app.Application;
 
+import com.google.gson.Gson;
 import com.ioter.common.util.WebserviceRequest;
 import com.ioter.di.component.AppComponent;
 import com.ioter.di.component.DaggerAppComponent;
@@ -9,7 +10,6 @@ import com.ioter.di.module.AppModule;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 public class AppApplication extends Application
@@ -17,7 +17,7 @@ public class AppApplication extends Application
 
     private AppComponent mAppComponent;
 
-    private static WebserviceRequest mWebServiceRequest;
+    private WebserviceRequest mWebServiceRequest;
 
     private static ExecutorService mThreadPool;
 
@@ -34,28 +34,35 @@ public class AppApplication extends Application
         return mAppComponent;
     }
 
-    public static WebserviceRequest getWebserviceRequest()
+    public WebserviceRequest getWebserviceRequest()
     {
         return mWebServiceRequest;
     }
 
     public static ExecutorService getExecutorService()
     {
-        if (mThreadPool == null || mThreadPool.isShutdown())
-        {
-            mThreadPool = Executors.newFixedThreadPool(24);
-        }
         return mThreadPool;
     }
+
+    public static Gson mGson;
+
+    public static Gson getGson()
+    {
+        return mGson;
+    }
+
 
     @Override
     public void onCreate()
     {
         super.onCreate();
         ZXingLibrary.initDisplayOpinion(this);
-        mApplication = this;
         mAppComponent = DaggerAppComponent.builder().appModule(new AppModule(this))
                 .build();
+        mApplication = (AppApplication) mAppComponent.getApplication();
+        mThreadPool = mAppComponent.getExecutorService();
+        mWebServiceRequest = mAppComponent.getWebserviceRequest();
+        mGson = mAppComponent.getGson();
     }
 
 

@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/common_background_color"
-    android:orientation="vertical" >
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/common_background_color"
+              android:orientation="vertical">
 
-    <include layout="@layout/include_common_bar" />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/AppTheme.ToolBar"
+        app:layout_scrollFlags="scroll|enterAlways"
+        />
+
 
     <LinearLayout
         android:id="@+id/warehouse_llyt"
@@ -17,24 +28,24 @@
         android:paddingBottom="8dp"
         android:paddingLeft="@dimen/common_margin_size"
         android:paddingRight="@dimen/common_margin_size"
-        android:paddingTop="8dp" >
+        android:paddingTop="8dp">
 
         <TextView
             android:id="@+id/warehouse_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="请选择仓库"
             android:textColor="@color/common_text_color"
-            android:textSize="14sp"
-            android:text="请选择仓库" />
+            android:textSize="14sp"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_arrow"
-            android:contentDescription="@mipmap/ic_arrow" />
+            android:contentDescription="@mipmap/ic_arrow"
+            android:src="@mipmap/ic_arrow"/>
     </LinearLayout>
-    
+
     <LinearLayout
         android:id="@+id/shelf_llyt"
         android:layout_width="match_parent"
@@ -45,55 +56,85 @@
         android:paddingBottom="8dp"
         android:paddingLeft="@dimen/common_margin_size"
         android:paddingRight="@dimen/common_margin_size"
-        android:paddingTop="8dp" >
+        android:paddingTop="8dp">
 
         <TextView
             android:id="@+id/shelf_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="请选择货架"
             android:textColor="@color/common_text_color"
-            android:textSize="14sp"
-            android:text="请选择货架" />
+            android:textSize="14sp"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_arrow"
-            android:contentDescription="@mipmap/ic_arrow" />
+            android:contentDescription="@mipmap/ic_arrow"
+            android:src="@mipmap/ic_arrow"/>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/store_llyt"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:paddingBottom="8dp"
         android:paddingLeft="@dimen/common_margin_size"
         android:paddingRight="@dimen/common_margin_size"
-        android:gravity="center_vertical" >
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/store_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="请选择门店"
+            android:textColor="@color/common_text_color"
+            android:textSize="14sp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@mipmap/ic_arrow"
+            android:src="@mipmap/ic_arrow"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:paddingBottom="8dp"
+        android:paddingLeft="@dimen/common_margin_size"
+        android:paddingRight="@dimen/common_margin_size">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/number"
             android:textColor="@color/common_text_color"
-            android:textSize="14sp"
-            android:text="@string/number" />
-        
+            android:textSize="14sp"/>
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/common_text_color"
-            android:textSize="14sp"
             android:gravity="center"
-            android:text="@string/EPC" />
-        
+            android:text="@string/EPC"
+            android:textColor="@color/common_text_color"
+            android:textSize="14sp"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/common_text_color"
-            android:textSize="14sp"
             android:gravity="center"
-            android:text="@string/shelf" />
+            android:text="@string/shelf"
+            android:textColor="@color/common_text_color"
+            android:textSize="14sp"/>
 
     </LinearLayout>
 
@@ -102,18 +143,40 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="@color/white"
         android:cacheColorHint="#00000000"
         android:divider="@null"
         android:fastScrollEnabled="false"
         android:listSelector="#00000000"
         android:scrollbars="none"
-        android:scrollingCache="false"
-        android:background="@color/white" />
+        android:scrollingCache="false"/>
 
-    <Button
-        android:id="@+id/read_btn"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="开始" />
+        android:orientation="horizontal"
+        android:weightSum="2"
+        >
+
+        <Button
+            android:id="@+id/read_btn"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_btn"
+            android:text="开始"/>
+
+        <Button
+            android:id="@+id/commit_btn"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_btn"
+            android:text="提交"/>
+    </LinearLayout>
+
 
 </LinearLayout>

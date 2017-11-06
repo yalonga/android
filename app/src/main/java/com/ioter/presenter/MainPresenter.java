@@ -2,19 +2,20 @@ package com.ioter.presenter;
 
 
 import android.content.Intent;
-import android.text.TextUtils;
+import android.util.Log;
 
-import com.ioter.common.util.ToastUtil;
-import com.ioter.common.util.WebserviceRequest;
+import com.ioter.bean.ScanInfoData;
+import com.ioter.common.rx.ErrorHandlerWebCallBack;
 import com.ioter.presenter.contract.MainContract;
 import com.ioter.ui.activity.ScanResultActivity;
 
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.inject.Inject;
-
-
-import static android.Manifest.permission.READ_PHONE_STATE;
 
 public class MainPresenter extends BasePresenter<MainContract.IMainModel, MainContract.MainView>
 {
@@ -25,45 +26,50 @@ public class MainPresenter extends BasePresenter<MainContract.IMainModel, MainCo
         super(iMainModel, mainView);
     }
 
-    public void getProductInfo(String epc){
+    public void getProductInfo(final String epc)
+    {
 
-        mModel.getProductInfo(epc, new WebserviceRequest.WebCallback()
+        mModel.getProductInfo(epc, new ErrorHandlerWebCallBack(mContext, mView)
         {
-            @Override
-            public void onStart()
-            {
-
-            }
 
             @Override
-            public void onNext(String result)
+            public void onResultData(int status, JSONObject object, String errMsg)
             {
-                if (TextUtils.isEmpty(result))
+                if (status == 0)
                 {
-                    ToastUtil.toast("数据异常");
-                    return;
+                    try
+                    {
+                        ArrayList<ScanInfoData> dataList = new ArrayList<ScanInfoData>();
+                        Iterator ite = object.keys();
+                        // 遍历jsonObject数据,添加到Map对象
+                        while (ite.hasNext())
+                        {
+                            String key = ite.next().toString();
+                            String value = object.get(key).toString();
+                            ScanInfoData data = new ScanInfoData();
+                            data.time = key.replace("\n", "").trim();
+                            data.content = value.replace("\n", "").trim();
+                            dataList.add(data);
+                        }
+                        if (dataList.size() > 0)
+                        {
+                            Intent intent = new Intent();
+                            intent.putExtra("result", dataList);
+                            intent.setClass(mContext, ScanResultActivity.class);
+                            mContext.startActivity(intent);
+                        }
+                    } catch (JSONException e)
+                    {
+                        onError(e);
+                    }
+                } else
+                {
+                    Log.e("errMsg", errMsg);
                 }
-                Intent intent = new Intent();
-                intent.putExtra("result", result);
-                intent.setClass(mContext, ScanResultActivity.class);
-                mContext.startActivity(intent);
-
             }
 
-            @Override
-            public void onError(String error)
-            {
-
-            }
-
-            @Override
-            public void onComplete()
-            {
-
-            }
         });
     }
-
 
 
 }

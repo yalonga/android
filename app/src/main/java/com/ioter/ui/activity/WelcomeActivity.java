@@ -27,8 +27,8 @@ public class WelcomeActivity extends AppCompatActivity
             switch (msg.what)
             {
                 case UIConstant.MSG_WELCOME_Delay:
-                    //startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
-                    startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+                    startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
+                    //startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
                     WelcomeActivity.this.finish();
                     break;
                 default:

@@ -1,9 +1,8 @@
-package com.ioter.ui.activity;
+package com.ioter.hopeland;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +13,12 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.clouiotech.pda.rfid.EPCModel;
 import com.ioter.AppApplication;
 import com.ioter.R;
 import com.ioter.bean.EpcInOutData;
 import com.ioter.common.sqlite.ClothesData;
-import com.ioter.common.util.SettingSPUtil;
 import com.ioter.common.util.ToastUtil;
 import com.ioter.di.component.AppComponent;
 import com.ioter.di.component.DaggerCheckComponent;
@@ -35,18 +33,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import butterknife.BindView;
+
+import static com.ioter.hopeland.Comm.Awl;
 
 /**
  * 出入库
  *
+ * @author Administrator
  */
-public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.CheckView
+public class SupoinEpcInOutActivity extends SupoinUHFBaseActivity implements CheckContract.CheckView
 {
     /**
-     * 0 出库 1 入库
+     * 0 出库 1 入库 2 入店
      **/
     private int mType;
     private int mWarehouseId; // 仓库id;
@@ -55,7 +55,6 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
     private int mReceiveStoreId; // 门店id
     private int mWarehousePosition;
     private int mShelfPosition;
-    private int mStorePosition;
     private JSONArray mWarehouseData;
     private JSONArray mStoreData;
 
@@ -63,15 +62,13 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
     private TextView mShelfTv;
     private TextView mStoreTv;
     private MyAdapter mAdapter;
-    private Object hmList_Lock = new Object();
-    private HashMap<String, EPCModel> mCacheList = new HashMap<String, EPCModel>();
-    private ArrayList<EPCModel> mEpcList = new ArrayList<>();
     @BindView(R.id.read_btn)
     Button mReadBtn;
     @BindView(R.id.commit_btn)
     Button mCommitBtn;
     @BindView(R.id.tool_bar)
     Toolbar mToolBar;
+
 
     @Override
     public int setLayout()
@@ -89,9 +86,16 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
     public void init()
     {
         mType = getIntent().getIntExtra("type", 0);
+        super.init();
         initTitle();
         initView();
         takeWarehouseData();
+    }
+
+    @Override
+    protected void showlist(ArrayList<EpcBeen> mEpcList)
+    {
+        mAdapter.update(mEpcList);
     }
 
     @Override
@@ -136,6 +140,7 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
         return "";
     }
 
+
     private void initView()
     {
         mWarehouseTv = (TextView) findViewById(R.id.warehouse_tv);
@@ -150,17 +155,6 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
         ListView epcLv = (ListView) findViewById(R.id.epc_lv);
         mAdapter = new MyAdapter();
         epcLv.setAdapter(mAdapter);
-    }
-
-    @Override
-    protected void ShowList()
-    {
-        if (!isStartPingPong)
-            return;
-        synchronized (hmList_Lock)
-        {
-            mAdapter.update(mEpcList);
-        }
     }
 
 
@@ -218,7 +212,6 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    mStorePosition = position;
                     try
                     {
                         JSONObject jsonObject = mStoreData.getJSONObject(position);
@@ -329,7 +322,7 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
                     ToastUtil.toast("请先设置门店");
                     return;
                 }
-                readEpc(v);
+                readEpc();
                 break;
 
             default:
@@ -337,29 +330,32 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
         }
     }
 
-    private void back()
-    {
-        if (mReadBtn.getText().toString().equals(getString(R.string.stop)))
-        {
-            return;
-        }
-        finish();
-    }
 
-    private void readEpc(View v)
+    @Override
+    protected void readEpc()
     {
-        Button btnRead = (Button) v;
-        String controlText = btnRead.getText().toString();
+        String controlText = mReadBtn.getText().toString();
         if (controlText.equals(getString(R.string.start)))
         {
-            Pingpong_Read();
-            btnRead.setText(getString(R.string.stop));
+            try
+            {
+                Awl.WakeLock();
+                Comm.startScan();
+            } catch (Exception ex)
+            {
+                Toast.makeText(this,
+                        "ERR：" + ex.getMessage(), Toast.LENGTH_SHORT)
+                        .show();
+            }
+            mReadBtn.setText(getString(R.string.stop));
         } else
         {
-            Pingpong_Stop();
-            btnRead.setText(getString(R.string.start));
+            Awl.ReleaseWakeLock();
+            Comm.stopScan();
+            mReadBtn.setText(getString(R.string.start));
         }
     }
+
 
     @Override
     public void updateList(ArrayList<ClothesData> list)
@@ -380,7 +376,6 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
         {
             mWarehouseData = object.getJSONArray("ListWh");
             mStoreData = object.getJSONArray("ListStore");
-            //initSp();
         } catch (JSONException e)
         {
             e.printStackTrace();
@@ -388,30 +383,6 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
         }
     }
 
-
-    @Override
-    public void OutPutEPC(EPCModel model)
-    {
-        super.OutPutEPC(model);
-        try
-        {
-            synchronized (hmList_Lock)
-            {
-                if (mCacheList.containsKey(model._EPC + model._TID))
-                {
-                    EPCModel tModel = mCacheList.get(model._EPC + model._TID);
-                    tModel._TotalCount++;
-                } else
-                {
-                    mCacheList.put(model._EPC + model._TID, model);
-                    mEpcList.add(model);
-                }
-            }
-        } catch (Exception ex)
-        {
-            Log.e("Debug", "标签输出异常：" + ex.getMessage());
-        }
-    }
 
     private class MyAdapter extends BaseAdapter
     {
@@ -423,19 +394,19 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
             mDataList = new ArrayList<EpcInOutData>();
         }
 
-        public void update(ArrayList<EPCModel> dataList)
+        public void update(ArrayList<EpcBeen> dataList)
         {
             if (dataList.size() == 0)
             {
                 return;
             }
-            for (EPCModel epcModel : dataList)
+            for (EpcBeen epcBeen : dataList)
             {
                 EpcInOutData epcInData = new EpcInOutData();
                 epcInData.InWhID = mWarehouseId;
                 epcInData.InWhSiteID = mShelfId;
                 epcInData.InUserID = 2;
-                epcInData.EPC = epcModel._EPC;
+                epcInData.EPC = epcBeen.epcValue;
                 mDataList.add(epcInData);
             }
             dataList.clear();
@@ -516,45 +487,6 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
     }
 
     /**
-     * 从SharedPreferences中获取之前设置的仓库和货架id
-     */
-    private void initSp()
-    {
-        int warehouseId = SettingSPUtil.getInt(SettingSPUtil.Warehouse_Id + "_" + mType);
-        int shelfId = SettingSPUtil.getInt(SettingSPUtil.Shelf_Id + "_" + mType);
-        try
-        {
-            for (int i = 0; i < mWarehouseData.length(); i++)
-            {
-                JSONObject object = mWarehouseData.getJSONObject(i);
-                int wareID = object.getInt("ID");
-                if (wareID == warehouseId)
-                {
-                    mWarehouseId = wareID;
-                    mWarehouseTv.setText(object.getString("WhName"));
-                    JSONArray shelfArray = object.getJSONArray("ListWhSite");
-                    for (int j = 0; j < shelfArray.length(); j++)
-                    {
-                        JSONObject shelfObject = shelfArray.getJSONObject(j);
-                        int id = shelfObject.getInt("ID");
-                        if (id == shelfId)
-                        {
-                            mShelfId = shelfId;
-                            mShelfTv.setText(shelfObject.getString("WhSiteName"));
-                            break;
-                        }
-                    }
-                    break;
-                }
-
-            }
-        } catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * 提交入库EPC数据
      */
     private void submitEpcList()
@@ -565,12 +497,18 @@ public class EpcInOutActivity extends UHFBaseActivity implements CheckContract.C
             ToastUtil.toast("没有可提交的数据");
             return;
         }
+
         ArrayList<String> list = new ArrayList<>();
-        for (int i = 0; i < dataList.size(); i++)
+       for (int i = 0; i < dataList.size(); i++)
         {
             EpcInOutData epcInOutData = dataList.get(i);
             list.add(epcInOutData.EPC);
         }
+        //list.add("454444534F4D4F434D42");
+
+        //["45414153584C30434830","E2000016201300900710CF98","454444534F4D4F434D42","E2000016201301350710CFFE","E2000016201300700720D149"]
+
+
         mPresenter.submitWarehouseEpcList(AppApplication.getGson().toJson(list), mWarehouseId, mShelfId, "trackingNo", mReceiveStoreId, 2, mType);
     }
 

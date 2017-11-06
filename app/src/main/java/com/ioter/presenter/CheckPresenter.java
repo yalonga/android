@@ -1,16 +1,11 @@
 package com.ioter.presenter;
 
 
-import android.content.Intent;
-import android.text.TextUtils;
-
+import com.ioter.common.rx.ErrorHandlerWebCallBack;
 import com.ioter.common.sqlite.ClothesData;
 import com.ioter.common.util.ToastUtil;
-import com.ioter.common.util.WebserviceRequest;
 import com.ioter.presenter.contract.CheckContract;
-import com.ioter.presenter.contract.MainContract;
 import com.ioter.ui.activity.BaseActivity;
-import com.ioter.ui.activity.ScanResultActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,113 +26,145 @@ public class CheckPresenter extends BasePresenter<CheckContract.ICheckModel, Che
 
     public void getCheckList()
     {
-        mModel.getCheckList(new WebserviceRequest.WebCallback()
+        mModel.getCheckList(new ErrorHandlerWebCallBack(mContext, mView)
         {
             @Override
-            public void onStart()
+            public void onResultData(int status, JSONObject object, String errMsg)
             {
-
-            }
-
-            @Override
-            public void onNext(String result)
-            {
-                if (TextUtils.isEmpty(result))
-                {
-                    return;
-                }
                 try
                 {
-                    JSONObject object = new JSONObject(result);
-                    mView.setId(object.getInt("ID"));
-                    ArrayList<ClothesData> dataList = new ArrayList<ClothesData>();
-                    JSONArray jsonArray = object.getJSONArray("ListDetail");
-                    if (jsonArray != null && jsonArray.length() > 0)
+                    if (status == 0 && object != null)
                     {
-                        for (int i = 0; i < jsonArray.length(); i++)
+                        mView.setId(object.getInt("ID"));
+                        ArrayList<ClothesData> dataList = new ArrayList<ClothesData>();
+                        JSONArray jsonArray = object.getJSONArray("ListDetail");
+                        if (jsonArray != null && jsonArray.length() > 0)
                         {
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            ClothesData data = new ClothesData();
-                            data.mEpc = jsonObject.getString("EPC");
-                            JSONObject clothesObject = jsonObject.getJSONObject("Clothing");
-                            data.mName = clothesObject.getString("Name");
-                            data.mStyleNum = clothesObject.getString("StyleNo");
-                            data.mColour = clothesObject.getString("Color");
-                            data.mSize = clothesObject.getString("Size");
-                            data.mPrice = String.format("%.2f", clothesObject.getDouble("Price"));
-                            dataList.add(data);
+                            for (int i = 0; i < jsonArray.length(); i++)
+                            {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                if (jsonObject != null)
+                                {
+                                    ClothesData data = new ClothesData();
+                                    data.mEpc = jsonObject.getString("EPC");
+                                    Object clothing = jsonObject.get("Clothing");
+                                    //JSONObject clothesObject = jsonObject.getJSONObject("Clothing");
+                                    if (clothing != null && clothing instanceof JSONObject)
+                                    {
+                                        JSONObject clothesObject = (JSONObject) clothing;
+                                        data.mName = clothesObject.getString("Name");
+                                        data.mStyleNum = clothesObject.getString("StyleNo");
+                                        data.mColour = clothesObject.getString("Color");
+                                        data.mSize = clothesObject.getString("Size");
+                                        data.mPrice = String.format("%.2f", clothesObject.getDouble("Price"));
+                                    }
+                                    dataList.add(data);
+                                }
+                            }
+                        }
+                        if (dataList != null && dataList.size() > 0)
+                        {
+                            mView.updateList(dataList);
+                        } else
+                        {
+                            ToastUtil.toast("没有需要盘点的数据");
+                            ((BaseActivity) mContext).finish();
                         }
                     }
-                    if (dataList != null && dataList.size() > 0)
-                    {
-                        mView.updateList(dataList);
-                    } else
-                    {
-                        ToastUtil.toast("没有需要盘点的数据");
-                        ((BaseActivity) mContext).finish();
-                    }
-                } catch (JSONException e)
+                } catch (
+                        JSONException e)
+
                 {
                     e.printStackTrace();
-                    ToastUtil.toast(result + "");
-                    ((BaseActivity) mContext).finish();
+                    onError(e);
                 }
             }
 
-            @Override
-            public void onError(String error)
-            {
-
-            }
-
-            @Override
-            public void onComplete()
-            {
-
-            }
         });
     }
 
 
     public void submitEpcList(ArrayList<String> checkedEpcList, int mID)
     {
-        mModel.submitEpcList(checkedEpcList, mID, new WebserviceRequest.WebCallback()
+        mModel.submitEpcList(checkedEpcList, mID, new ErrorHandlerWebCallBack(mContext, mView)
         {
-            @Override
-            public void onStart()
-            {
-
-            }
 
             @Override
-            public void onNext(String result)
+            public void onResultData(int status, JSONObject object, String errMsg)
             {
-                if (TextUtils.isEmpty(result))
-                {
-                    return;
-                }
-                if (result.equals("true"))
+                if (status == 0)
                 {
                     ToastUtil.toast("数据提交成功");
-                    ((BaseActivity)mContext).finish();
+                    ((BaseActivity) mContext).finish();
                 } else
                 {
-                    ToastUtil.toast("数据提交失败：" + result);
+                    ToastUtil.toast("数据提交失败");
                 }
             }
 
-            @Override
-            public void onError(String error)
-            {
 
-            }
-
-            @Override
-            public void onComplete()
-            {
-
-            }
         });
     }
+
+
+    public void submitWarehouseEpcList(String jsonArray, int whId, int whSiteId, String trackingNo, int receiveStoreId, int userId, final int type)
+    {
+        mModel.submitWarehouseEpcList(jsonArray, whId, whSiteId, trackingNo, receiveStoreId, userId, type, new ErrorHandlerWebCallBack(mContext, mView)
+        {
+
+            @Override
+            public void onResultData(int status, JSONObject object, String errMsg)
+            {
+
+                if (status == 0)
+                {
+                    if (type == 0)
+                    {
+                        ToastUtil.toast("出库成功");
+                    } else if (type == 1)
+                    {
+                        ToastUtil.toast("入库成功");
+                    } else
+                    {
+                        ToastUtil.toast("入店成功");
+                    }
+                    ((BaseActivity) mContext).finish();
+                } else
+                {
+                    if (type == 0)
+                    {
+                        ToastUtil.toast("出库失败:" + errMsg);
+                    } else if (type == 1)
+                    {
+                        ToastUtil.toast("入库失败:" + errMsg);
+                    } else
+                    {
+                        ToastUtil.toast("入店失败：" + errMsg);
+                    }
+                }
+            }
+
+        });
+    }
+
+    public void getWarehouseData(int id)
+    {
+        mModel.getWarehouseData(id, new ErrorHandlerWebCallBack(mContext, mView)
+        {
+            @Override
+            public void onResultData(int status, JSONObject object, String errMsg)
+            {
+                if (status == 0)
+                {
+                    mView.setWareData(object);
+                } else
+                {
+                    ToastUtil.toast(errMsg);
+                }
+            }
+        });
+
+    }
+
 
 }

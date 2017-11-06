@@ -17,15 +17,14 @@
         android:textColor="@color/black"
         android:textSize="12sp"/>
 
-    <TextView
-        android:id="@+id/count_tv"
+
+    <ImageView
+        android:id="@+id/check_iv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
         android:layout_weight="2"
-        android:singleLine="true"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:textSize="12sp"/>
+        android:contentDescription="@+id/check_iv"
+        android:src="@mipmap/ic_checked"
+        android:visibility="visible"/>
 
 </LinearLayout>

@@ -18,7 +18,6 @@
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/AppTheme.ToolBar"
-
         >
 
 

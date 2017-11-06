@@ -237,7 +237,6 @@ public abstract class UHFBaseActivity extends BaseActivity<CheckPresenter> imple
         Clear();
         Helper_ThreadPool.ThreadPool_StartSingle(new Runnable()
         {
-
             @Override
             public void run()
             {

@@ -2,7 +2,7 @@ package com.ioter.di.component;
 
 import android.app.Application;
 
-
+import com.google.gson.Gson;
 import com.ioter.common.util.WebserviceRequest;
 import com.ioter.di.module.AppModule;
 
@@ -20,8 +20,10 @@ public interface AppComponent {
 
    public Application getApplication();
 
-/*    public ExecutorService getExecutorService();*/
+    public ExecutorService getExecutorService();
 
     public WebserviceRequest getWebserviceRequest();
+
+    public  Gson getGson();
 
 }

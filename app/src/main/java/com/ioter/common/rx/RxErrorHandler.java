@@ -3,7 +3,6 @@ package com.ioter.common.rx;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.ioter.common.exception.ApiException;
 import com.ioter.common.exception.BaseException;
 import com.ioter.common.exception.ErrorMessageFactory;
 
@@ -27,17 +26,11 @@ public class RxErrorHandler
 
         BaseException exception = new BaseException();
 
-        if (e instanceof ApiException)
-        {
-
-            exception.setCode(((ApiException) e).getCode());
-
-        } else if (e instanceof SocketException)
+        if (e instanceof SocketException)
         {
 
         } else
         {
-
             exception.setCode(BaseException.UNKNOWN_ERROR);
         }
 
@@ -48,9 +41,6 @@ public class RxErrorHandler
 
     public void showErrorMessage(BaseException e)
     {
-
-
         Toast.makeText(mContext, e.getDisplayMessage(), Toast.LENGTH_LONG).show();
-
     }
 }

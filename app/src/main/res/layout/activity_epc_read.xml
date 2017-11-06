@@ -1,114 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tool_bar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center"
-        android:background="@color/common_titlebar_bg" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/readEpc"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/AppTheme.ToolBar"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:title="读EPC"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_TitleTagID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
-            android:text="@string/EPC" />
+            android:gravity="center"
+            android:text="@string/EPC"
+            android:textColor="@color/black"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.1"
-            android:text="@string/readCount" />
+            android:gravity="center"
+            android:text="@string/readCount"
+            android:textColor="@color/black"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#808080" />
+        android:background="#808080"/>
 
     <ListView
         android:id="@+id/lv_Main"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.85" />
+        android:layout_weight="0.85"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#808080" />
+        android:background="#808080"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/lb_ReadTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.35"
-            android:text="@string/Tag_Time" />
+            android:gravity="center"
+            android:text="@string/Tag_Time"
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/lb_ReadSpeed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.35"
-            android:text="@string/Tag_ReadTotalCount" />
+            android:gravity="center"
+            android:text="@string/Tag_ReadTotalCount"
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/lb_TagCount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="@string/Tag_Count" />
+            android:gravity="center"
+            android:text="@string/Tag_Count"
+            android:textColor="@color/black"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#808080" />
+        android:background="#808080"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="right"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_Read"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
+            android:background="@drawable/bg_btn"
             android:onClick="Read"
             android:text="@string/start"
-            android:textSize="18sp" />
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+
 
         <Button
             android:id="@+id/btn_Read_Back"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
+            android:background="@drawable/bg_btn"
             android:onClick="Back"
             android:text="@string/back"
-            android:textSize="18sp" />
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
     </LinearLayout>
 
 </LinearLayout>
