@@ -76,6 +76,7 @@ public class MoreActivity extends BaseActivity
         findViewById(R.id.setting_llyt).setOnClickListener(this);
         findViewById(R.id.epc_read_llyt).setOnClickListener(this);
         findViewById(R.id.versions_llyt).setOnClickListener(this);
+        findViewById(R.id.bgaqring_llyt).setOnClickListener(this);
     }
 
     @Override
@@ -112,6 +113,9 @@ public class MoreActivity extends BaseActivity
                 break;
             case R.id.versions_llyt:
                 ToastUtil.toast("当前版本:" + getAppVersionName(this));
+                break;
+            case R.id.bgaqring_llyt:
+                startActivity(new Intent(this, QrcodeTransferActivity.class));
                 break;
 
             default:

@@ -93,4 +93,29 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/bgaqring_llyt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_size"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:padding="@dimen/common_margin_size">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="条形码关联"
+            android:textColor="@color/common_text_color"
+            android:textSize="14sp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@mipmap/ic_arrow"
+            android:src="@mipmap/ic_arrow"/>
+
+    </LinearLayout>
+
 </LinearLayout>

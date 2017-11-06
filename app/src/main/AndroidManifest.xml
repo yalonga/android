@@ -111,6 +111,11 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Notitle.FullScreen"/>
+        <activity
+            android:name="com.ioter.ui.activity.QrcodeTransferActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Notitle.FullScreen"/>
 
         <meta-data
             android:name="com.google.android.gms.version"

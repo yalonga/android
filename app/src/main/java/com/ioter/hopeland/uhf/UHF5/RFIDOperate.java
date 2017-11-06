@@ -46,7 +46,8 @@ import static com.ioter.hopeland.Comm.uhf5outpouwer;
 import static com.ioter.hopeland.uhf.UHF5helper.ReaderHelper.setContext;
 
 
-public class RFIDOperate {
+public class RFIDOperate
+{
     private String TAG = "RFIDOperate";
 
 
@@ -83,16 +84,20 @@ public class RFIDOperate {
     public Handler mHandler;//扫描数据异步操作
 
 
-    public String getScanCode() {
+    public String getScanCode()
+    {
         return scanCode;
     }
 
-    public void setScanCode(String scanCode) {
+    public void setScanCode(String scanCode)
+    {
         this.scanCode = scanCode;
     }
 
-    public void onCreate(Context context, String opwStr) {
-        try {
+    public void onCreate(Context context, String opwStr)
+    {
+        try
+        {
             pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 //            wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "com.supoin.hailan");
 //            wl.acquire();
@@ -102,7 +107,8 @@ public class RFIDOperate {
             // 连接RFID
             setContext(context);
             mSerialPortFinder = new SerialPortFinder();
-            if (Connect(Comm.COM, Comm.Baudrate)) {
+            if (Connect(Comm.COM, Comm.Baudrate))
+            {
                 m_curReaderSetting = mReaderHelper.getCurReaderSetting();
                 m_curInventoryBuffer = mReaderHelper.getCurInventoryBuffer();
                 m_curOperateTagBuffer = mReaderHelper.getCurOperateTagBuffer();
@@ -110,17 +116,21 @@ public class RFIDOperate {
                         .getCurOperateTagISO18000Buffer();
             }
 
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
 
 
-    public void setOpw(String opwStr) {
+    public void setOpw(String opwStr)
+    {
         byte btOutputPower = 0x00;
-        try {
+        try
+        {
             btOutputPower = (byte) Integer.parseInt(opwStr);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
             //Log.d(UHF005.tagUHF5,e.getMessage());
         }
@@ -129,38 +139,48 @@ public class RFIDOperate {
         m_curReaderSetting.btAryOutputPower = new byte[]{btOutputPower};
     }
 
-    public boolean Connect(String posPort, int posBaud) {
-        try {
+    public boolean Connect(String posPort, int posBaud)
+    {
+        try
+        {
             mSerialPort = new SerialPort(new File(posPort), posBaud, 0);
-            Log.d( "TAG","Connect"+posPort);
+            Log.d("TAG", "Connect" + posPort);
 
-            try {
+            try
+            {
                 mReaderHelper = ReaderHelper.getDefaultHelper();
                 mReaderHelper.setReader(mSerialPort.getInputStream(), mSerialPort.getOutputStream());
                 mReader = mReaderHelper.getReader();
-            } catch (Exception e) {
+            } catch (Exception e)
+            {
                 e.printStackTrace();
 
                 return false;
             }
             return true;
-        } catch (SecurityException e) {
+        } catch (SecurityException e)
+        {
             e.printStackTrace();
             return false;
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
             return false;
-        } catch (InvalidParameterException e) {
+        } catch (InvalidParameterException e)
+        {
             e.printStackTrace();
             return false;
         }
     }
 
-    public void startScan(int Seeeion, int btTarget, int antNo) {
-        try {
+    public void startScan(int Seeeion, int btTarget, int antNo)
+    {
+        try
+        {
             mReaderHelper.setReader(mSerialPort.getInputStream(), mSerialPort.getOutputStream());
             mReader = mReaderHelper.getReader();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -199,7 +219,8 @@ public class RFIDOperate {
         IsFlushList = true;
     }
 
-    public void stop() {
+    public void stop()
+    {
         mReaderHelper.setInventoryFlag(false);
         m_curInventoryBuffer.bLoopInventoryReal = false;
         mLoopHandler.removeCallbacks(mLoopRunnable);
@@ -207,21 +228,31 @@ public class RFIDOperate {
         refreshText();
     }
 
-    public void onResume(Context context) {
-        if (mReader != null) {
+    public void onResume(Context context)
+    {
+        if (mReader != null)
+        {
             if (!mReader.IsAlive())
                 mReader.StartWait();
         }
     }
 
     private Handler mLoopHandler = new Handler();
-    private Runnable mLoopRunnable = new Runnable() {
-        public void run() {
-            byte btWorkAntenna = m_curInventoryBuffer.lAntenna
-                    .get(m_curInventoryBuffer.nIndexAntenna);
-            if (btWorkAntenna < 0)
-                btWorkAntenna = 0;
-            mReader.setWorkAntenna(m_curReaderSetting.btReadId, btWorkAntenna);
+    private Runnable mLoopRunnable = new Runnable()
+    {
+        public void run()
+        {
+            try
+            {
+                byte btWorkAntenna = m_curInventoryBuffer.lAntenna
+                        .get(m_curInventoryBuffer.nIndexAntenna);
+                if (btWorkAntenna < 0)
+                    btWorkAntenna = 0;
+                mReader.setWorkAntenna(m_curReaderSetting.btReadId, btWorkAntenna);
+            } catch (Exception e)
+            {
+
+            }
             //playSound();
             mLoopHandler.postDelayed(this, Comm.rfidSleep);
         }
@@ -232,17 +263,23 @@ public class RFIDOperate {
             mtagstotal = 0,//现在总数
             TagsTotaltext = 0;//之前总数
 
-    public void refreshText() {
+    public void refreshText()
+    {
         List<String> mAccessList = new ArrayList<String>();
         Message m = Message.obtain(mHandler, UHF5MESSAGE_TEXT);
         lsTagList = m_curInventoryBuffer.lsTagList;
-       // playSound();
-       mHandler.sendMessage(m);
+        // playSound();
+        if (mHandler == null)
+        {
+            return;
+        }
+        mHandler.sendMessage(m);
 
 //        mTagsCount = m_curInventoryBuffer.lsTagList.size();
         mtagstotal = mReaderHelper.getInventoryTotal();
         // TagsTotaltext = Integer.parseInt(mTagsTotalText.getText().toString());
-        if (mtagstotal != TagsTotaltext) {
+        if (mtagstotal != TagsTotaltext)
+        {
             playSound();
             // soundPool.play(1, 1, 1, 0, 0, 1);
         }
@@ -255,15 +292,20 @@ public class RFIDOperate {
 
     private Boolean IsFlushList = true; // 是否刷列表
 
-    public final BroadcastReceiver mRecv = new BroadcastReceiver() {
+    public final BroadcastReceiver mRecv = new BroadcastReceiver()
+    {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context context, Intent intent)
+        {
             byte btCmd = intent.getByteExtra("cmd", (byte) 0x00);
-            if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_READER_SETTING) && btCmd == CMD.GET_FIRMWARE_VERSION) {
+            if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_READER_SETTING) && btCmd == CMD.GET_FIRMWARE_VERSION)
+            {
                 String strVersion = String.valueOf(m_curReaderSetting.btMajor & 0xFF) + "." + String.valueOf(m_curReaderSetting.btMinor & 0xFF);
                 comm_callback.onReceive(strVersion, 0);
-            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_INVENTORY_REAL)) {
-                switch (btCmd) {
+            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_INVENTORY_REAL))
+            {
+                switch (btCmd)
+                {
                     case CMD.REAL_TIME_INVENTORY:
                     case CMD.CUSTOMIZED_SESSION_TARGET_INVENTORY:
                         mLoopHandler.removeCallbacks(mLoopRunnable);
@@ -280,7 +322,8 @@ public class RFIDOperate {
                                     try
                                     {
                                         Thread.sleep(1000); // 一秒钟刷新一次
-                                        refreshText();;
+                                        refreshText();
+                                        ;
                                     } catch (InterruptedException e)
                                     {
                                         e.printStackTrace();
@@ -292,10 +335,12 @@ public class RFIDOperate {
                     case ReaderHelper.INVENTORY_ERR:
                     case ReaderHelper.INVENTORY_ERR_END:
                     case ReaderHelper.INVENTORY_END:
-                        if (mReaderHelper.getInventoryFlag()) {
+                        if (mReaderHelper.getInventoryFlag())
+                        {
                             mLoopHandler.removeCallbacks(mLoopRunnable);
                             mLoopHandler.postDelayed(mLoopRunnable, Comm.rfidSleep);
-                        } else {
+                        } else
+                        {
                             mLoopHandler.removeCallbacks(mLoopRunnable);
                         }
                         // 刷新线程
@@ -309,7 +354,8 @@ public class RFIDOperate {
                                     try
                                     {
                                         Thread.sleep(1000); // 一秒钟刷新一次
-                                        refreshText();;
+                                        refreshText();
+                                        ;
                                     } catch (InterruptedException e)
                                     {
                                         e.printStackTrace();
@@ -321,10 +367,12 @@ public class RFIDOperate {
                 }
             }
 
-            if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_READER_SETTING) && Comm.opeT == operateType.getPower) {
+            if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_READER_SETTING) && Comm.opeT == operateType.getPower)
+            {
                 Message msg = new Message();
                 Bundle b = new Bundle();
-                if (m_curReaderSetting.btAryOutputPower != null) {
+                if (m_curReaderSetting.btAryOutputPower != null)
+                {
                     uhf5outpouwer = m_curReaderSetting.btAryOutputPower[0] & 0xFF;
                     int setSel = (uhf5outpouwer * 100 + 10 - 500) / 100;
                     opwStr = String.valueOf(uhf5outpouwer);
@@ -336,11 +384,13 @@ public class RFIDOperate {
                 msg.setData(b);
                 Comm.mOtherHandler.sendMessage(msg);
             } else if ((intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_READER_SETTING) && Comm.opeT == operateType.setPower)
-                    || (intent.getAction().equals(ReaderHelper.BROADCAST_WRITE_DATA) && Comm.opeT == operateType.setPower)) {
+                    || (intent.getAction().equals(ReaderHelper.BROADCAST_WRITE_DATA) && Comm.opeT == operateType.setPower))
+            {
                 Message msg = new Message();
                 Bundle b = new Bundle();
                 boolean isSuc = false;
-                if (m_curReaderSetting.btAryOutputPower != null) {
+                if (m_curReaderSetting.btAryOutputPower != null)
+                {
                     opwStr = String.valueOf(uhf5outpouwer);
                     isSuc = true;
                 } else
@@ -348,10 +398,12 @@ public class RFIDOperate {
                 b.putBoolean("isSetPower", isSuc);
                 msg.setData(b);
                 Comm.mOtherHandler.sendMessage(msg);
-            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_READER_SETTING) && Comm.opeT == operateType.getReg) {
+            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_READER_SETTING) && Comm.opeT == operateType.getReg)
+            {
                 Message msg = new Message();
                 Bundle b = new Bundle();
-                switch (m_curReaderSetting.btRegion & 0xFF) {
+                switch (m_curReaderSetting.btRegion & 0xFF)
+                {
                     case 0x01:
                         Comm.mPos1 = (m_curReaderSetting.btFrequencyStart & 0xFF) - 43;
                         Comm.mPos2 = (m_curReaderSetting.btFrequencyEnd & 0xFF) - 43;
@@ -376,7 +428,8 @@ public class RFIDOperate {
                 }
                 msg.setData(b);
                 Comm.mOtherHandler.sendMessage(msg);
-            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_READER_SETTING) && Comm.opeT == operateType.setReg) {
+            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_READER_SETTING) && Comm.opeT == operateType.setReg)
+            {
                 Message msg = new Message();
                 Bundle b = new Bundle();
                 Boolean isSetReg;
@@ -388,12 +441,14 @@ public class RFIDOperate {
                 b.putBoolean("isSetReg", isSetReg);
                 msg.setData(b);
                 Comm.mOtherHandler.sendMessage(msg);
-            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_OPERATE_TAG) && Comm.opeT == operateType.readOpe) {
+            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_OPERATE_TAG) && Comm.opeT == operateType.readOpe)
+            {
                 Message msg = new Message();
                 String strData = "";
                 byte[] rdata = new byte[Integer.valueOf(operaCount) * 2];
                 char[] out = null;
-                if (m_curOperateTagBuffer.lsTagList.size() > 0) {
+                if (m_curOperateTagBuffer.lsTagList.size() > 0)
+                {
                     strData = m_curOperateTagBuffer.lsTagList.get(0).strData;
                     strData = strData.replace(" ", "");
 //                    String s1=strData.substring(0,24);
@@ -405,16 +460,20 @@ public class RFIDOperate {
 
                     Comm.Str2Hex(strData, operaCount, rdata);
 
-                    if (operadatatype == 1) {
+                    if (operadatatype == 1)
+                    {
                         out = new char[rdata.length];
                         for (int i = 0; i < rdata.length; i++)
                             out[i] = (char) rdata[i];
                         strData = String.valueOf(out);
-                    } else if (operadatatype == 2) {
-                        try {
+                    } else if (operadatatype == 2)
+                    {
+                        try
+                        {
                             strData = new String(rdata, "gbk");
                             // strData = new String(rdata2, "gbk");
-                        } catch (UnsupportedEncodingException e) {
+                        } catch (UnsupportedEncodingException e)
+                        {
                             Log.d(tagUHF1, "readOP err:" + e.getMessage());
                             e.printStackTrace();
                         }
@@ -426,9 +485,11 @@ public class RFIDOperate {
                 }
 //                mHandler.sendMessage(m);
                 Comm.mRWLHandler.sendMessage(msg);
-            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_OPERATE_TAG) && Comm.opeT == operateType.writeOpe) {
+            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_OPERATE_TAG) && Comm.opeT == operateType.writeOpe)
+            {
                 boolean isSucceed = false;
-                if (m_curOperateTagBuffer.lsTagList.size() > 0) {
+                if (m_curOperateTagBuffer.lsTagList.size() > 0)
+                {
                     isSucceed = true;
                 }
                 Message msg = new Message();
@@ -437,9 +498,11 @@ public class RFIDOperate {
                 msg.setData(b);
 //                mHandler.sendMessage(m);
                 Comm.mRWLHandler.sendMessage(msg);
-            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_OPERATE_TAG) && Comm.opeT == operateType.lockOpe) {
+            } else if (intent.getAction().equals(ReaderHelper.BROADCAST_REFRESH_OPERATE_TAG) && Comm.opeT == operateType.lockOpe)
+            {
                 boolean isSucceed = false;
-                if (m_curOperateTagBuffer.lsTagList.size() > 0) {
+                if (m_curOperateTagBuffer.lsTagList.size() > 0)
+                {
                     isSucceed = true;
                 }
                 Message msg = new Message();
@@ -456,15 +519,18 @@ public class RFIDOperate {
 
     };
 
-    public void onDestroy(Context context) {
+    public void onDestroy(Context context)
+    {
         if (lbm != null)
             lbm.unregisterReceiver(mRecv);
         mLoopHandler.removeCallbacks(mLoopRunnable);
         IsFlushList = false;
     }
 
-    public static boolean setUHF5Parameters() {
-        try {
+    public static boolean setUHF5Parameters()
+    {
+        try
+        {
             //设置功率
             byte btOutputPower = 0x00;
             btOutputPower = (byte) Integer.parseInt("30");
@@ -483,7 +549,8 @@ public class RFIDOperate {
             btTarget = 0;
 
 
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException e)
+        {
             e.printStackTrace();
             return false;
         }
@@ -491,15 +558,18 @@ public class RFIDOperate {
         return true;
     }
 
-    public static String[] getuhf5Fre(int SelectedItemPosition) {
+    public static String[] getuhf5Fre(int SelectedItemPosition)
+    {
         float nStart = 0x0;
         int nloop = 0;
         String[] ssf = null;
-        switch (SelectedItemPosition) {
+        switch (SelectedItemPosition)
+        {
             case 0:
                 nStart = 920.00f;
                 ssf = new String[11];
-                for (nloop = 0; nloop < 11; nloop++) {
+                for (nloop = 0; nloop < 11; nloop++)
+                {
                     String strTemp = String.format("%.2f", nStart);
                     ssf[nloop] = strTemp;
                     nStart += 0.5f;
@@ -508,7 +578,8 @@ public class RFIDOperate {
             case 1:
                 nStart = 902.00f;
                 ssf = new String[53];
-                for (nloop = 0; nloop < 53; nloop++) {
+                for (nloop = 0; nloop < 53; nloop++)
+                {
                     String strTemp = String.format("%.2f", nStart);
                     ssf[nloop] = strTemp;
                     nStart += 0.5f;
@@ -517,7 +588,8 @@ public class RFIDOperate {
             case 2:
                 nStart = 865.00f;
                 ssf = new String[7];
-                for (nloop = 0; nloop < 7; nloop++) {
+                for (nloop = 0; nloop < 7; nloop++)
+                {
                     String strTemp = String.format("%.2f", nStart);
                     ssf[nloop] = strTemp;
                     nStart += 0.5f;
@@ -531,9 +603,11 @@ public class RFIDOperate {
         return ssf;
     }
 
-    public static String uhf5readOp(int ant, int tagBank, String opCount, String startAdd, int datatype) {
+    public static String uhf5readOp(int ant, int tagBank, String opCount, String startAdd, int datatype)
+    {
         String readRet = "";
-        try {
+        try
+        {
             byte btReadId = -1;
             byte btMemBank = 0x00;
             byte btWordAdd = 0x00;
@@ -558,7 +632,8 @@ public class RFIDOperate {
             m_curOperateTagBuffer.clearBuffer();
             mReader.readTag(btReadId, btMemBank, btWordAdd, btWordCnt, btAryPassWord);
             Log.d("readTag", String.valueOf(btReadId) + " " + String.valueOf(btMemBank) + " " + String.valueOf(btWordAdd) + " " + String.valueOf(btWordCnt));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException e)
+        {
             e.printStackTrace();
             Log.d("readTag", e.getMessage());
             readRet = e.getMessage();
@@ -566,12 +641,14 @@ public class RFIDOperate {
         return readRet;
     }
 
-    public static String uhf5writeOp(int ant, int tagBank, String opCount, String startAdd, int datatype, String strWriteData) {
+    public static String uhf5writeOp(int ant, int tagBank, String opCount, String startAdd, int datatype, String strWriteData)
+    {
         String writeRet = "";
         boolean isSucceed = false;
         Message msg = new Message();
         Bundle b = new Bundle();
-        try {
+        try
+        {
             byte btMemBank = 0x00;
             byte btWordAdd = 0x00;
             byte btWordCnt = 0x00;
@@ -588,29 +665,37 @@ public class RFIDOperate {
                 btMemBank = 0x03;
 
             byte[] btAryPassWord = new byte[4];
-            if (strPwd != null && !strPwd.equals("")) {
+            if (strPwd != null && !strPwd.equals(""))
+            {
                 result = StringTool.stringToStringArray(strPwd.toUpperCase(), 2);
                 btAryPassWord = StringTool.stringArrayToByteArray(result, result.length);
             }
 
-            if (strWriteData != null && !strWriteData.equals("")) {
-                if (datatype == 0) {
+            if (strWriteData != null && !strWriteData.equals(""))
+            {
+                if (datatype == 0)
+                {
                     btAryData = new byte[strWriteData.length() / 2];
                     Comm.Str2Hex(strWriteData, strWriteData.length(), btAryData);
-                } else if (datatype == 1) {
+                } else if (datatype == 1)
+                {
                     String ascstr = strWriteData;
                     if (ascstr.length() % 2 != 0)
                         ascstr += "0";
                     btAryData = ascstr.getBytes();
-                } else if (datatype == 2) {
-                    try {
+                } else if (datatype == 2)
+                {
+                    try
+                    {
                         String ascstr = strWriteData;
                         btAryData = ascstr.getBytes("gbk");
-                    } catch (UnsupportedEncodingException e) {
+                    } catch (UnsupportedEncodingException e)
+                    {
                         e.printStackTrace();
                     }
                 }
-            } else {
+            } else
+            {
                 writeRet = "写入数据为空";
                 b.putBoolean("isLockSucceed", isSucceed);
                 msg.setData(b);
@@ -625,7 +710,8 @@ public class RFIDOperate {
 
             m_curOperateTagBuffer.clearBuffer();
             mReader.writeTag(m_curReaderSetting.btReadId, btAryPassWord, btMemBank, btWordAdd, btWordCnt, btAryData);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException e)
+        {
             e.printStackTrace();
             Log.d("writeTag", e.getMessage());
             writeRet = e.getMessage();
@@ -636,40 +722,52 @@ public class RFIDOperate {
         return writeRet;
     }
 
-    public static String uhf5lockOp(int ant, int tagBank, int LockType) {
+    public static String uhf5lockOp(int ant, int tagBank, int LockType)
+    {
         String lockRet = "";
         boolean isSucceed = false;
         Message msg = new Message();
         Bundle b = new Bundle();
 
-        try {
+        try
+        {
             byte btMemBank = 0x00;
             byte btLockType = 0x00;
             byte[] btAryPassWord = null;
-            if (tagBank == 0) {
+            if (tagBank == 0)
+            {
                 btMemBank = 0x04;
-            } else if (tagBank == 1) {
+            } else if (tagBank == 1)
+            {
                 btMemBank = 0x05;
-            } else if (tagBank == 2) {
+            } else if (tagBank == 2)
+            {
                 btMemBank = 0x03;
-            } else if (tagBank == 3) {
+            } else if (tagBank == 3)
+            {
                 btMemBank = 0x02;
-            } else if (tagBank == 4) {
+            } else if (tagBank == 4)
+            {
                 btMemBank = 0x01;
             }
 
-            if (LockType == 0) {
+            if (LockType == 0)
+            {
                 btLockType = 0x00;
-            } else if (LockType == 1) {
+            } else if (LockType == 1)
+            {
                 btLockType = 0x01;
-            } else if (LockType == 2) {
+            } else if (LockType == 2)
+            {
                 btLockType = 0x03;
             }
 
-            if (strPwd != null && !strPwd.equals("")) {
+            if (strPwd != null && !strPwd.equals(""))
+            {
                 String[] reslut = StringTool.stringToStringArray(strPwd.toUpperCase(), 2);
                 btAryPassWord = StringTool.stringArrayToByteArray(reslut, 4);
-            } else {
+            } else
+            {
                 lockRet = "访问密码为空或错误";
                 Log.d("lockTag", lockRet);
                 b.putBoolean("isLockSucceed", isSucceed);
@@ -680,7 +778,8 @@ public class RFIDOperate {
 
             m_curOperateTagBuffer.clearBuffer();
             mReader.lockTag(m_curReaderSetting.btReadId, btAryPassWord, btMemBank, btLockType);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
             lockRet = e.getMessage();
             Log.d("lockTag", lockRet);

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/common_background_color"
+              android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/AppTheme.ToolBar"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:title="@string/app_name"
+        />
+
+    <Button
+        android:id="@+id/qrcode_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="读取条形码"
+        />
+
+
+    <TextView
+        android:id="@+id/qrcode_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/common_margin_size"
+        android:text="条形码"
+        android:textColor="@color/common_text_color"
+        android:textSize="14sp"/>
+
+
+    <Button
+        android:id="@+id/read_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="读取EPC"
+        />
+
+
+    <TextView
+        android:id="@+id/epc_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/common_margin_size"
+        android:text="@string/readEpc"
+        android:textColor="@color/common_text_color"
+        android:textSize="14sp"/>
+
+    <Button
+        android:id="@+id/write_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="写EPC"
+        />
+
+    <EditText
+        android:id="@+id/write_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="写epc"
+        android:padding="@dimen/common_margin_size"
+        android:textColor="@color/common_text_color"
+        android:textSize="14sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:textColor="@color/common_text_color"
+        android:textSize="14sp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/common_margin_size"
+            android:text="设置功率:"
+            android:textColor="@color/common_text_color"
+            android:textSize="14sp"/>
+
+        <EditText
+            android:id="@+id/set_power_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="写epc"
+            android:padding="@dimen/common_margin_size"
+            android:textColor="@color/common_text_color"
+            android:textSize="14sp"/>
+
+        <Button
+            android:id="@+id/set_power_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设置"
+            />
+
+
+    </LinearLayout>
+</LinearLayout>
+
+
