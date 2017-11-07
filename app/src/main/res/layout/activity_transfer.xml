@@ -88,7 +88,6 @@
             android:id="@+id/set_power_et"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="写epc"
             android:padding="@dimen/common_margin_size"
             android:textColor="@color/common_text_color"
             android:textSize="14sp"/>

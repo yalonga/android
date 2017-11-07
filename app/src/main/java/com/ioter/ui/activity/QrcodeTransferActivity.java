@@ -15,8 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ioter.R;
+import com.ioter.common.util.ACache;
 import com.ioter.common.util.DataUtil;
+import com.ioter.common.util.DateUtil;
 import com.ioter.common.util.ToastUtil;
+import com.ioter.common.util.UIConstant;
 import com.ioter.di.component.AppComponent;
 import com.ioter.hopeland.Comm;
 import com.ioter.hopeland.EpcBeen;
@@ -28,6 +31,11 @@ import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 
@@ -35,6 +43,7 @@ import static com.ioter.R.id.read_bt;
 import static com.ioter.hopeland.Comm.Awl;
 import static com.ioter.hopeland.Comm.opeT;
 import static com.ioter.hopeland.Comm.operateType.nullOperate;
+import static com.ioter.hopeland.Comm.operateType.setPower;
 import static com.ioter.hopeland.Comm.setAntPower;
 import static com.ioter.ui.activity.MainActivity.REQUEST_CAMERA_PERM;
 
@@ -69,6 +78,7 @@ public class QrcodeTransferActivity extends SupoinUHFBaseActivity
     EditText mPowerSetEt;
     @BindView(R.id.set_power_bt)
     Button mPowerSetBt;
+    private String waterCode;
 
 
     @Override
@@ -96,11 +106,10 @@ public class QrcodeTransferActivity extends SupoinUHFBaseActivity
     @Override
     protected void showlist(ArrayList<EpcBeen> mEpcList)
     {
-        if(mEpcList!=null&&mEpcList.size()>0)
+        if (mEpcList != null && mEpcList.size() > 0)
         {
             mEpcTv.setText(mEpcList.get(0).epcValue);
         }
-
     }
 
 
@@ -170,9 +179,10 @@ public class QrcodeTransferActivity extends SupoinUHFBaseActivity
                 break;
             case R.id.write_bt:
                 String qrcode = mQrCodeTv.getText().toString();
-                if (DataUtil.isEmpty(qrcode))
+                if (DataUtil.isEmpty(qrcode) || qrcode.length() != 13)
                 {
                     ToastUtil.toast("请先设置条形码");
+                    return;
                 }
                 String epc = mEpcTv.getText().toString();
                 if (DataUtil.isEmpty(epc))
@@ -190,7 +200,8 @@ public class QrcodeTransferActivity extends SupoinUHFBaseActivity
                     String opCount = 6 + "";
                     String startAdd = 2 + "";
 
-                    String strWriteData = mWriteEpcEt.getText().toString();
+                    String strWriteData = createWriteData();
+                    mWriteEpcEt.setText(strWriteData);
 
 
                     if (tagBank == 1 && (startAdd.equals("0") || startAdd.equals("1")))
@@ -236,8 +247,8 @@ public class QrcodeTransferActivity extends SupoinUHFBaseActivity
             case R.id.set_power_bt:
                 try
                 {
-                    Comm.opeT = Comm.operateType.setPower;
-                    int ant1pow = 500;
+                    Comm.opeT = setPower;
+                    int ant1pow = Integer.parseInt(mPowerSetEt.getText().toString());
                     int ant2pow = 500;
                     int ant3pow = 500;
                     int ant4pow = 500;
@@ -256,11 +267,79 @@ public class QrcodeTransferActivity extends SupoinUHFBaseActivity
         }
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        setPower();
+    }
+
+    @Override
+    protected void setPower()
+    {
+        if (!isPowerSet)
+        {
+            isPowerSet = true;
+
+            new Timer().schedule(new TimerTask()
+            {
+                @Override
+                public void run()
+                {
+                    try
+                    {
+                        Comm.opeT = setPower;
+                        int ant1pow = 500;
+                        int ant2pow = 500;
+                        int ant3pow = 500;
+                        int ant4pow = 500;
+                        setAntPower(ant1pow, ant2pow, ant3pow, ant4pow);
+                    } catch (Exception e)
+                    {
+                        return;
+                    }
+                }
+            }, 500);
+        }
+    }
+
+    private String createWriteData()
+    {
+        String qrCode = mQrCodeTv.getText().toString();
+        int checkCode = new Random().nextInt(10);
+        int year = DateUtil.getYear(new Date());
+        int mon = DateUtil.getMon(new Date());
+        String day = String.format("%02d", DateUtil.getDay(new Date()));
+        String month = Integer.toHexString(mon);
+        String date = (year + "").substring(2) + month + day;
+        waterCode = ACache.get(this).getAsString(UIConstant.WATER_CODE);
+        if (DataUtil.isEmpty(waterCode))
+        {
+            waterCode = "00000";
+        } else
+        {
+            long parseValue = Long.parseLong(waterCode, 16);
+            waterCode = padLeft(Long.toHexString(0x00001L + parseValue), 5);
+        }
+        return qrCode + checkCode + date + waterCode;
+    }
+
+    public static String padLeft(String s, int length)
+    {
+        byte[] bs = new byte[length];
+        byte[] ss = s.getBytes();
+        Arrays.fill(bs, (byte) (48 & 0xff));
+        System.arraycopy(ss, 0, bs, length - ss.length, ss.length);
+        return new String(bs);
+    }
+
+    private boolean isPowerSet;
 
     @Override
     protected void readEpc()
     {
         String controlText = mEpcReadBt.getText().toString();
+
         if (controlText.equals("读取EPC"))
         {
             try
@@ -307,8 +386,10 @@ public class QrcodeTransferActivity extends SupoinUHFBaseActivity
                         Bundle wb = msg.getData();
                         boolean isWriteSucceed = wb.getBoolean("isWriteSucceed");
                         if (isWriteSucceed)
+                        {
+                            ACache.get(QrcodeTransferActivity.this).put(UIConstant.WATER_CODE, waterCode);
                             Toast.makeText(QrcodeTransferActivity.this, "Write Succeed", Toast.LENGTH_SHORT).show();
-                        else
+                        } else
                             Toast.makeText(QrcodeTransferActivity.this, "Write Fail", Toast.LENGTH_SHORT).show();
                         break;
                     case writeepcOpe:

@@ -24,6 +24,8 @@ public class UIConstant
     public static int _Min_Power = 0; // 读写器最小发射功率
     public static String _NowReadParam = _NowAntennaNo + "|1"; // 读标签参数
 
+    public static final String WATER_CODE = "watercode";
+
 
     //public static String BASEURL = "http://192.168.31.24";//本地
     //public static String BASEURL = "http://192.168.31.67:30000";//内网

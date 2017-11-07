@@ -295,9 +295,16 @@ public abstract class SupoinUHFBaseActivity extends BaseActivity<CheckPresenter>
             } else if (moduleType == Comm.Module.UHF005)
             {
                 rfidOperate.mHandler = uhfhandler;
+
+                setPower();
             }
         }
     };
+
+    protected void setPower()
+    {
+
+    }
 
 
     @Override
