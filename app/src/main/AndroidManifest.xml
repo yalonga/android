@@ -11,6 +11,8 @@
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
 
@@ -95,19 +97,25 @@
             android:theme="@style/AppTheme.Notitle.FullScreen"/>
 
         <activity
-            android:name="com.ioter.hopeland.SupoinEpcCheckActivity"
+            android:name="com.ioter.swingu.SwinguEpcInOutActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Notitle.FullScreen"/>
 
         <activity
-            android:name="com.ioter.hopeland.SupoinEpcInOutActivity"
+            android:name="com.ioter.supoin.SupoinEpcCheckActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Notitle.FullScreen"/>
 
         <activity
-            android:name="com.ioter.hopeland.SupoinEpcReadActivity"
+            android:name="com.ioter.supoin.SupoinEpcInOutActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Notitle.FullScreen"/>
+
+        <activity
+            android:name="com.ioter.supoin.SupoinEpcReadActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Notitle.FullScreen"/>

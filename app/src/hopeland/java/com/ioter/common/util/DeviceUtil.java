@@ -8,6 +8,7 @@ public class DeviceUtil
 
     public static final int SUPOIN = 0;//肖邦
     public static final int HOPELAND = 1;//
+    public static final int SWINGU = 2;//
 
     public static int getDeviceId()
     {
@@ -19,7 +20,7 @@ public class DeviceUtil
         DeviceUtil.deviceId = deviceId;
     }
 
-    public static int deviceId = HOPELAND;
+    public static int deviceId = SUPOIN;
 
     public static String getDeviceName(int deviceId)
     {

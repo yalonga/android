@@ -4,6 +4,7 @@ apply plugin: 'android-apt'
 
 android {
     signingConfigs {
+
         config {
             keyAlias 'ioter'
             keyPassword 'android'
@@ -15,7 +16,7 @@ android {
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.ioter"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -41,9 +42,9 @@ android {
         }
     }
     productFlavors {
-        supion {
-        }
         hopeland {
+        }
+        supion {
         }
     }
     applicationVariants.all { variant ->
@@ -69,6 +70,7 @@ def getDate() {
     def formattedDate = date.format('yyyyMMddHHmm')
     return formattedDate
 }
+
 
 dependencies {
     provided fileTree(include: ['*.jar'], dir: 'libs')

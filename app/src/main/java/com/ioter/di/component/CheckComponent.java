@@ -2,8 +2,10 @@ package com.ioter.di.component;
 
 import com.ioter.di.ActivityScope;
 import com.ioter.di.module.CheckModule;
-import com.ioter.hopeland.SupoinEpcCheckActivity;
-import com.ioter.hopeland.SupoinEpcInOutActivity;
+import com.ioter.supoin.SupoinEpcCheckActivity;
+import com.ioter.supoin.SupoinEpcInOutActivity;
+import com.ioter.swingu.SwinguEpcCheckActivity;
+import com.ioter.swingu.SwinguEpcInOutActivity;
 import com.ioter.ui.activity.EpcCheckActivity;
 import com.ioter.ui.activity.EpcInOutActivity;
 
@@ -21,4 +23,9 @@ public interface CheckComponent
     void inject(SupoinEpcCheckActivity activity);
 
     void inject(SupoinEpcInOutActivity activity);
+
+    void inject(SwinguEpcInOutActivity activity);
+
+    void inject(SwinguEpcCheckActivity activity);
+
 }

@@ -8,7 +8,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.clouiotech.pda.rfid.EPCModel;
 import com.ioter.R;
 import com.ioter.common.sqlite.ClothesData;
-import com.ioter.hopeland.EpcBeen;
+import com.ioter.supoin.EpcBeen;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +44,7 @@ public class DefaultCheckAdapter extends BaseQuickAdapter<ClothesData, BaseViewH
 
     public interface IEpcCheck
     {
-        void checkedCount(int totalCount,int count);
+        void checkedCount(int totalCount, int count);
     }
 
     private IEpcCheck mIEpcCheck;
@@ -84,7 +84,7 @@ public class DefaultCheckAdapter extends BaseQuickAdapter<ClothesData, BaseViewH
             {
                 if (mIEpcCheck != null)
                 {
-                    mIEpcCheck.checkedCount(mData.size(),mCheckedCount);
+                    mIEpcCheck.checkedCount(mData.size(), mCheckedCount);
                 }
                 notifyDataSetChanged();
             }
@@ -118,7 +118,7 @@ public class DefaultCheckAdapter extends BaseQuickAdapter<ClothesData, BaseViewH
             {
                 if (mIEpcCheck != null)
                 {
-                    mIEpcCheck.checkedCount(mData.size(),mCheckedCount);
+                    mIEpcCheck.checkedCount(mData.size(), mCheckedCount);
                 }
                 notifyDataSetChanged();
             }
@@ -126,12 +126,39 @@ public class DefaultCheckAdapter extends BaseQuickAdapter<ClothesData, BaseViewH
     }
 
 
+    public void updateEpcValue(String epc)
+    {
+        boolean hadChange = false;
+        for (int i = 0; i < mData.size(); i++)
+        {
+            ClothesData clothesData = mData.get(i);
+            if (clothesData.mEpc.equals(epc))
+            {
+                if (!clothesData.mIsCheck)
+                {
+                    hadChange = true;
+                    clothesData.mIsCheck = true;
+                    mCheckedCount++;
+                }
+                break;
+            }
+            if (hadChange)
+            {
+                if (mIEpcCheck != null)
+                {
+                    mIEpcCheck.checkedCount(mData.size(), mCheckedCount);
+                }
+                notifyDataSetChanged();
+            }
+        }
+    }
+
     /**
      * 排序将已扫到的数据排到前面
      */
     public void sortDataList()
     {
-        if(mData.size() <= 1)
+        if (mData.size() <= 1)
         {
             return;
         }
@@ -146,12 +173,10 @@ public class DefaultCheckAdapter extends BaseQuickAdapter<ClothesData, BaseViewH
                     if (lhs.mIsCheck)
                     {
                         return -1;
-                    }
-                    else if (rhs.mIsCheck)
+                    } else if (rhs.mIsCheck)
                     {
                         return 1;
-                    }
-                    else
+                    } else
                     {
                         return 0;
                     }

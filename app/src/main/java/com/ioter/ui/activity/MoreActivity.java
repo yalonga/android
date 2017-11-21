@@ -14,7 +14,7 @@ import com.ioter.R;
 import com.ioter.common.util.DeviceUtil;
 import com.ioter.common.util.ToastUtil;
 import com.ioter.di.component.AppComponent;
-import com.ioter.hopeland.SupoinEpcReadActivity;
+import com.ioter.supoin.SupoinEpcReadActivity;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.ionicons_typeface_library.Ionicons;
 

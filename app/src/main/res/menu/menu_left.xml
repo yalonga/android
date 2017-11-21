@@ -1,32 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single" android:id="@+id/group1" >
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
 
         <item
-            android:id="@+id/menu_app_update"
-            android:title="@string/apps_update"/>
-
-<!--        <item
-            android:id="@+id/menu_supoin"
-            android:title="@string/app_supoin"/>
-
+            android:id="@+id/menu_app_supion"
+            android:title="supion"/>
         <item
-            android:id="@+id/menu_hopeland"
-            android:title="@string/app_hopeland"/>-->
+            android:id="@+id/menu_app_hopeland"
+            android:title="hopeland"/>
+        <item
+            android:id="@+id/menu_app_swingu"
+            android:title="swingu"/>
+
+
+        <!--        <item
+                    android:id="@+id/menu_supoin"
+                    android:title="@string/app_supoin"/>
+
+                <item
+                    android:id="@+id/menu_hopeland"
+                    android:title="@string/app_hopeland"/>-->
 
         <item
             android:id="@+id/menu_setting"
             android:title="@string/sys_setting"/>
 
 
-
     </group>
 
 
-
-
-    <group android:checkableBehavior="single" android:id="@+id/group2">
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/menu_logout"
             android:title="@string/logout"/>

@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public  abstract  class BaseFragment<T extends BasePresenter> extends Fragment implements BaseView
+public abstract class BaseFragment<T extends BasePresenter> extends Fragment implements BaseView
 {
 
     private Unbinder mUnbinder;
@@ -29,61 +29,65 @@ public  abstract  class BaseFragment<T extends BasePresenter> extends Fragment i
 
 
     @Inject
-    T mPresenter ;
+    public T mPresenter;
 
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
 
+        mRootView = inflater.inflate(setLayout(), container, false);
+        mUnbinder = ButterKnife.bind(this, mRootView);
 
-
-         mRootView = inflater.inflate(setLayout(), container, false);
-         mUnbinder=  ButterKnife.bind(this, mRootView);
-
+        init(mRootView);
 
         return mRootView;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    {
         super.onActivityCreated(savedInstanceState);
 
 
         this.mApplication = (AppApplication) getActivity().getApplication();
         setupAcitivtyComponent(mApplication.getAppComponent());
 
-        init();
-
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         super.onDestroy();
 
-        if(mUnbinder != Unbinder.EMPTY){
+        if (mUnbinder != Unbinder.EMPTY)
+        {
             mUnbinder.unbind();
         }
     }
 
     @Override
-    public void showLoading() {
+    public void showLoading()
+    {
     }
 
     @Override
-    public void showError(String msg) {
+    public void showError(String msg)
+    {
     }
 
     @Override
-    public void dismissLoading() {
+    public void dismissLoading()
+    {
     }
 
     public abstract int setLayout();
 
-    public abstract  void setupAcitivtyComponent(AppComponent appComponent);
+    public abstract void setupAcitivtyComponent(AppComponent appComponent);
 
 
-    public abstract void  init();
+    public abstract void init(View view);
 
 
 }

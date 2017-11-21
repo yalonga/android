@@ -33,8 +33,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
 
     @Inject
-    public
-    T mPresenter;
+    public T mPresenter;
 
 
     @Override

@@ -21,10 +21,10 @@ import com.ioter.common.util.DateUtil;
 import com.ioter.common.util.ToastUtil;
 import com.ioter.common.util.UIConstant;
 import com.ioter.di.component.AppComponent;
-import com.ioter.hopeland.Comm;
-import com.ioter.hopeland.EpcBeen;
-import com.ioter.hopeland.SupoinUHFBaseActivity;
-import com.ioter.hopeland.uhf.UHF5Base.StringTool;
+import com.ioter.supoin.Comm;
+import com.ioter.supoin.EpcBeen;
+import com.ioter.supoin.SupoinUHFBaseActivity;
+import com.ioter.supoin.uhf.UHF5Base.StringTool;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.ionicons_typeface_library.Ionicons;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
@@ -40,12 +40,12 @@ import java.util.TimerTask;
 import butterknife.BindView;
 
 import static com.ioter.R.id.read_bt;
-import static com.ioter.hopeland.Comm.Awl;
-import static com.ioter.hopeland.Comm.opeT;
-import static com.ioter.hopeland.Comm.operateType.nullOperate;
-import static com.ioter.hopeland.Comm.operateType.setPower;
-import static com.ioter.hopeland.Comm.setAntPower;
-import static com.ioter.ui.activity.MainActivity.REQUEST_CAMERA_PERM;
+import static com.ioter.supoin.Comm.Awl;
+import static com.ioter.supoin.Comm.opeT;
+import static com.ioter.supoin.Comm.operateType.nullOperate;
+import static com.ioter.supoin.Comm.operateType.setPower;
+import static com.ioter.supoin.Comm.setAntPower;
+import static com.ioter.ui.fragment.MainFragment.REQUEST_CAMERA_PERM;
 
 /**
  * 更多

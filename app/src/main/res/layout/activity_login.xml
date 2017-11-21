@@ -82,8 +82,6 @@
             app:progressColor="@color/colorAccent"
             app:text="@string/login"
             app:textColor="@color/white"/>
-
-
     </LinearLayout>
 
 
